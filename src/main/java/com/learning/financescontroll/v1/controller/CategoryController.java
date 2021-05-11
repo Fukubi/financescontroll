@@ -17,11 +17,18 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.learning.financescontroll.config.SwaggerConfig;
 import com.learning.financescontroll.v1.constants.ControllerConstantVariables;
 import com.learning.financescontroll.v1.dto.CategoryDto;
 import com.learning.financescontroll.v1.model.ResponseModel;
 import com.learning.financescontroll.v1.service.ICategoryService;
 
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
+import io.swagger.annotations.ApiResponse;
+import io.swagger.annotations.ApiResponses;
+
+@Api(tags = SwaggerConfig.CATEGORY)
 @RestController
 @RequestMapping("/v1/categoria")
 public class CategoryController {
@@ -29,6 +36,9 @@ public class CategoryController {
 	@Autowired
 	private ICategoryService categoryService;
 
+	@ApiOperation("Listar todas as categorias cadastradas")
+	@ApiResponses(value = { @ApiResponse(code = 200, message = "Categorias listadas com sucesso"),
+			@ApiResponse(code = 500, message = "Erro interno no servidor") })
 	@GetMapping
 	public ResponseEntity<ResponseModel<List<CategoryDto>>> listarCategorias() {
 		ResponseModel<List<CategoryDto>> response = new ResponseModel<>();
@@ -39,6 +49,10 @@ public class CategoryController {
 		return ResponseEntity.status(HttpStatus.OK).body(response);
 	}
 
+	@ApiOperation("Consultar uma categoria cadastrada")
+	@ApiResponses(value = { @ApiResponse(code = 200, message = "Categorias consultada com sucesso"),
+			@ApiResponse(code = 404, message = "Categoria não encontrada"),
+			@ApiResponse(code = 500, message = "Erro interno no servidor") })
 	@GetMapping("/{id}")
 	public ResponseEntity<ResponseModel<CategoryDto>> consultarCategorias(@PathVariable Long id) {
 		ResponseModel<CategoryDto> response = new ResponseModel<>();
@@ -54,6 +68,10 @@ public class CategoryController {
 		return ResponseEntity.status(HttpStatus.OK).body(response);
 	}
 
+	@ApiOperation("Cadastrar uma categoria")
+	@ApiResponses(value = { @ApiResponse(code = 200, message = "Categorias cadastrada com sucesso"),
+			@ApiResponse(code = 400, message = "Erro na requisição do cliente"),
+			@ApiResponse(code = 500, message = "Erro interno no servidor") })
 	@PostMapping
 	public ResponseEntity<ResponseModel<Boolean>> cadastrarCategoria(@Valid @RequestBody CategoryDto category) {
 		ResponseModel<Boolean> response = new ResponseModel<>();
@@ -70,6 +88,11 @@ public class CategoryController {
 		return ResponseEntity.status(HttpStatus.CREATED).body(response);
 	}
 
+	@ApiOperation("Atualizar uma categoria cadastrada")
+	@ApiResponses(value = { @ApiResponse(code = 200, message = "Categorias atualizada com sucesso"),
+			@ApiResponse(code = 400, message = "Erro na requisição do cliente"),
+			@ApiResponse(code = 404, message = "Categoria não encontrada"),
+			@ApiResponse(code = 500, message = "Erro interno no servidor") })
 	@PutMapping
 	public ResponseEntity<ResponseModel<Boolean>> atualizarCategoria(@Valid @RequestBody CategoryDto category) {
 		ResponseModel<Boolean> response = new ResponseModel<>();
@@ -89,6 +112,11 @@ public class CategoryController {
 		return ResponseEntity.status(HttpStatus.OK).body(response);
 	}
 
+	@ApiOperation("Deletar uma categoria cadastrada")
+	@ApiResponses(value = { @ApiResponse(code = 200, message = "Categorias deletada com sucesso"),
+			@ApiResponse(code = 400, message = "Erro na requisição do cliente"),
+			@ApiResponse(code = 404, message = "Categoria não encontrada"),
+			@ApiResponse(code = 500, message = "Erro interno no servidor") })
 	@DeleteMapping("/{id}")
 	public ResponseEntity<ResponseModel<Boolean>> deletarCategoria(@PathVariable Long id) {
 		ResponseModel<Boolean> response = new ResponseModel<>();
