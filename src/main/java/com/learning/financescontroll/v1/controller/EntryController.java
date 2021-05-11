@@ -17,6 +17,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.learning.financescontroll.v1.constants.ControllerConstantVariables;
 import com.learning.financescontroll.v1.dto.EntryDto;
 import com.learning.financescontroll.v1.model.ResponseModel;
 import com.learning.financescontroll.v1.service.IEntryService;
@@ -46,10 +47,10 @@ public class EntryController {
 		response.add(WebMvcLinkBuilder.linkTo(WebMvcLinkBuilder.methodOn(EntryController.class).consultarLancamento(id))
 				.withSelfRel());
 		response.add(WebMvcLinkBuilder.linkTo(WebMvcLinkBuilder.methodOn(EntryController.class).deletarLancamento(id))
-				.withRel("DELETE"));
+				.withRel(ControllerConstantVariables.EXCLUIR.getValor()));
 		response.add(WebMvcLinkBuilder
 				.linkTo(WebMvcLinkBuilder.methodOn(EntryController.class).atualizarLancamento(response.getData()))
-				.withRel("UPDATE"));
+				.withRel(ControllerConstantVariables.ATUALIZAR.getValor()));
 		return ResponseEntity.status(HttpStatus.OK).body(response);
 	}
 
@@ -62,9 +63,9 @@ public class EntryController {
 				.linkTo(WebMvcLinkBuilder.methodOn(EntryController.class).cadastrarLancamento(entry)).withSelfRel());
 		response.add(
 				WebMvcLinkBuilder.linkTo(WebMvcLinkBuilder.methodOn(EntryController.class).atualizarLancamento(entry))
-						.withRel("UPDATE"));
+						.withRel(ControllerConstantVariables.ATUALIZAR.getValor()));
 		response.add(WebMvcLinkBuilder.linkTo(WebMvcLinkBuilder.methodOn(EntryController.class).listarLancamentos())
-				.withRel("GET_ALL"));
+				.withRel(ControllerConstantVariables.LISTAR.getValor()));
 		return ResponseEntity.status(HttpStatus.CREATED).body(response);
 	}
 
@@ -77,12 +78,12 @@ public class EntryController {
 				.linkTo(WebMvcLinkBuilder.methodOn(EntryController.class).atualizarLancamento(entry)).withSelfRel());
 		response.add(WebMvcLinkBuilder
 				.linkTo(WebMvcLinkBuilder.methodOn(EntryController.class).deletarLancamento(entry.getId()))
-				.withRel("DELETE"));
+				.withRel(ControllerConstantVariables.EXCLUIR.getValor()));
 		response.add(WebMvcLinkBuilder.linkTo(WebMvcLinkBuilder.methodOn(EntryController.class).listarLancamentos())
-				.withRel("GET_ALL"));
+				.withRel(ControllerConstantVariables.LISTAR.getValor()));
 		response.add(WebMvcLinkBuilder
 				.linkTo(WebMvcLinkBuilder.methodOn(EntryController.class).consultarLancamento(entry.getId()))
-				.withRel("GET"));
+				.withRel(ControllerConstantVariables.CONSULTAR.getValor()));
 		return ResponseEntity.status(HttpStatus.OK).body(response);
 	}
 
@@ -94,7 +95,7 @@ public class EntryController {
 		response.add(WebMvcLinkBuilder.linkTo(WebMvcLinkBuilder.methodOn(EntryController.class).deletarLancamento(id))
 				.withSelfRel());
 		response.add(WebMvcLinkBuilder.linkTo(WebMvcLinkBuilder.methodOn(EntryController.class).listarLancamentos())
-				.withRel("GET_ALL"));
+				.withRel(ControllerConstantVariables.LISTAR.getValor()));
 		return ResponseEntity.status(HttpStatus.OK).body(response);
 	}
 

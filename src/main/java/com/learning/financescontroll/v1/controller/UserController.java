@@ -17,6 +17,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.learning.financescontroll.v1.constants.ControllerConstantVariables;
 import com.learning.financescontroll.v1.dto.UserDto;
 import com.learning.financescontroll.v1.model.ResponseModel;
 import com.learning.financescontroll.v1.service.IUserService;
@@ -46,10 +47,10 @@ public class UserController {
 		response.add(WebMvcLinkBuilder.linkTo(WebMvcLinkBuilder.methodOn(UserController.class).consultarUsuario(id))
 				.withSelfRel());
 		response.add(WebMvcLinkBuilder.linkTo(WebMvcLinkBuilder.methodOn(UserController.class).deletarUsuario(id))
-				.withRel("DELETE"));
+				.withRel(ControllerConstantVariables.EXCLUIR.getValor()));
 		response.add(WebMvcLinkBuilder
 				.linkTo(WebMvcLinkBuilder.methodOn(UserController.class).atualizarUsuario(response.getData()))
-				.withRel("UPDATE"));
+				.withRel(ControllerConstantVariables.ATUALIZAR.getValor()));
 		return ResponseEntity.status(HttpStatus.OK).body(response);
 	}
 	
@@ -62,9 +63,9 @@ public class UserController {
 				.linkTo(WebMvcLinkBuilder.methodOn(UserController.class).cadastrarUsuario(user)).withSelfRel());
 		response.add(
 				WebMvcLinkBuilder.linkTo(WebMvcLinkBuilder.methodOn(UserController.class).atualizarUsuario(user))
-						.withRel("UPDATE"));
+						.withRel(ControllerConstantVariables.ATUALIZAR.getValor()));
 		response.add(WebMvcLinkBuilder.linkTo(WebMvcLinkBuilder.methodOn(UserController.class).listarUsuarios())
-				.withRel("GET_ALL"));
+				.withRel(ControllerConstantVariables.LISTAR.getValor()));
 		return ResponseEntity.status(HttpStatus.CREATED).body(response);
 	}
 	
@@ -77,12 +78,12 @@ public class UserController {
 				.linkTo(WebMvcLinkBuilder.methodOn(UserController.class).atualizarUsuario(user)).withSelfRel());
 		response.add(WebMvcLinkBuilder
 				.linkTo(WebMvcLinkBuilder.methodOn(UserController.class).deletarUsuario(user.getId()))
-				.withRel("DELETE"));
+				.withRel(ControllerConstantVariables.EXCLUIR.getValor()));
 		response.add(WebMvcLinkBuilder.linkTo(WebMvcLinkBuilder.methodOn(UserController.class).listarUsuarios())
-				.withRel("GET_ALL"));
+				.withRel(ControllerConstantVariables.LISTAR.getValor()));
 		response.add(WebMvcLinkBuilder
 				.linkTo(WebMvcLinkBuilder.methodOn(UserController.class).consultarUsuario(user.getId()))
-				.withRel("GET"));
+				.withRel(ControllerConstantVariables.CONSULTAR.getValor()));
 		return ResponseEntity.status(HttpStatus.OK).body(response);
 	}
 	
@@ -94,7 +95,7 @@ public class UserController {
 		response.add(WebMvcLinkBuilder.linkTo(WebMvcLinkBuilder.methodOn(UserController.class).deletarUsuario(id))
 				.withSelfRel());
 		response.add(WebMvcLinkBuilder.linkTo(WebMvcLinkBuilder.methodOn(UserController.class).listarUsuarios())
-				.withRel("GET_ALL"));
+				.withRel(ControllerConstantVariables.LISTAR.getValor()));
 		return ResponseEntity.status(HttpStatus.OK).body(response);
 	}
 }

@@ -14,6 +14,7 @@ import org.springframework.stereotype.Service;
 
 import com.learning.financescontroll.entity.UserEntity;
 import com.learning.financescontroll.repository.IUserRepository;
+import com.learning.financescontroll.v1.constants.ServiceConstantVariables;
 import com.learning.financescontroll.v1.controller.UserController;
 import com.learning.financescontroll.v1.dto.UserDto;
 import com.learning.financescontroll.v1.exception.UserException;
@@ -21,8 +22,6 @@ import com.learning.financescontroll.v1.exception.UserException;
 @CacheConfig(cacheNames = "usuario")
 @Service
 public class UserService implements IUserService {
-
-	private static final String ERROGENERICO = "Erro interno identificado, Contate o suporte";
 
 	private IUserRepository userRepository;
 	private ModelMapper mapper;
@@ -48,7 +47,7 @@ public class UserService implements IUserService {
 		} catch (UserException c) {
 			throw c;
 		} catch (Exception e) {
-			throw new UserException(ERROGENERICO, HttpStatus.INTERNAL_SERVER_ERROR);
+			throw new UserException(ServiceConstantVariables.ERRO_GENERICO.getValor(), HttpStatus.INTERNAL_SERVER_ERROR);
 		}
 	}
 
@@ -60,11 +59,11 @@ public class UserService implements IUserService {
 			if (userOptional.isPresent()) {
 				return this.mapper.map(userOptional.get(), UserDto.class);
 			}
-			throw new UserException("Categoria não encontrada", HttpStatus.NOT_FOUND);
+			throw new UserException(ServiceConstantVariables.NOT_FOUND.getValor(), HttpStatus.NOT_FOUND);
 		} catch (UserException c) {
 			throw c;
 		} catch (Exception e) {
-			throw new UserException(ERROGENERICO, HttpStatus.INTERNAL_SERVER_ERROR);
+			throw new UserException(ServiceConstantVariables.ERRO_GENERICO.getValor(), HttpStatus.INTERNAL_SERVER_ERROR);
 		}
 	}
 
@@ -72,7 +71,7 @@ public class UserService implements IUserService {
 	public Boolean cadastrar(UserDto user) {
 		try {
 			if (user.getId() != null) {
-				throw new UserException("Não pode existir ID em cadastrar.", HttpStatus.BAD_REQUEST);
+				throw new UserException(ServiceConstantVariables.ID_NOT_PERMITTED.getValor(), HttpStatus.BAD_REQUEST);
 			}
 
 			UserEntity userEntity = this.mapper.map(user, UserEntity.class);
@@ -81,7 +80,7 @@ public class UserService implements IUserService {
 		} catch (UserException c) {
 			throw c;
 		} catch (Exception e) {
-			throw new UserException(ERROGENERICO, HttpStatus.INTERNAL_SERVER_ERROR);
+			throw new UserException(ServiceConstantVariables.ERRO_GENERICO.getValor(), HttpStatus.INTERNAL_SERVER_ERROR);
 		}
 	}
 
@@ -89,7 +88,7 @@ public class UserService implements IUserService {
 	public Boolean atualizar(UserDto user) {
 		try {
 			if (user.getId() == null) {
-				throw new UserException("Usuário sem ID.", HttpStatus.BAD_REQUEST);
+				throw new UserException(ServiceConstantVariables.MISSING_ID.getValor(), HttpStatus.BAD_REQUEST);
 			}
 
 			this.consultar(user.getId());
@@ -100,7 +99,7 @@ public class UserService implements IUserService {
 		} catch (UserException c) {
 			throw c;
 		} catch (Exception e) {
-			throw new UserException(ERROGENERICO, HttpStatus.INTERNAL_SERVER_ERROR);
+			throw new UserException(ServiceConstantVariables.ERRO_GENERICO.getValor(), HttpStatus.INTERNAL_SERVER_ERROR);
 		}
 	}
 
@@ -113,7 +112,7 @@ public class UserService implements IUserService {
 		} catch (UserException c) {
 			throw c;
 		} catch (Exception e) {
-			throw new UserException(ERROGENERICO, HttpStatus.INTERNAL_SERVER_ERROR);
+			throw new UserException(ServiceConstantVariables.ERRO_GENERICO.getValor(), HttpStatus.INTERNAL_SERVER_ERROR);
 		}
 	}
 

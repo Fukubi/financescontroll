@@ -14,6 +14,7 @@ import org.springframework.stereotype.Service;
 
 import com.learning.financescontroll.entity.CategoryEntity;
 import com.learning.financescontroll.repository.ICategoryRepository;
+import com.learning.financescontroll.v1.constants.ServiceConstantVariables;
 import com.learning.financescontroll.v1.controller.CategoryController;
 import com.learning.financescontroll.v1.dto.CategoryDto;
 import com.learning.financescontroll.v1.exception.CategoryException;
@@ -21,8 +22,6 @@ import com.learning.financescontroll.v1.exception.CategoryException;
 @CacheConfig(cacheNames = "categoria")
 @Service
 public class CategoryService implements ICategoryService {
-
-	private static final String ERROGENERICO = "Erro interno identificado, Contate o suporte";
 
 	private ICategoryRepository categoryRepository;
 	private ModelMapper mapper;
@@ -49,7 +48,8 @@ public class CategoryService implements ICategoryService {
 		} catch (CategoryException c) {
 			throw c;
 		} catch (Exception e) {
-			throw new CategoryException(ERROGENERICO, HttpStatus.INTERNAL_SERVER_ERROR);
+			throw new CategoryException(ServiceConstantVariables.ERRO_GENERICO.getValor(),
+					HttpStatus.INTERNAL_SERVER_ERROR);
 		}
 	}
 
@@ -61,11 +61,12 @@ public class CategoryService implements ICategoryService {
 			if (categoryOptional.isPresent()) {
 				return this.mapper.map(categoryOptional.get(), CategoryDto.class);
 			}
-			throw new CategoryException("Categoria não encontrada", HttpStatus.NOT_FOUND);
+			throw new CategoryException(ServiceConstantVariables.NOT_FOUND.getValor(), HttpStatus.NOT_FOUND);
 		} catch (CategoryException c) {
 			throw c;
 		} catch (Exception e) {
-			throw new CategoryException(ERROGENERICO, HttpStatus.INTERNAL_SERVER_ERROR);
+			throw new CategoryException(ServiceConstantVariables.ERRO_GENERICO.getValor(),
+					HttpStatus.INTERNAL_SERVER_ERROR);
 		}
 	}
 
@@ -73,7 +74,8 @@ public class CategoryService implements ICategoryService {
 	public Boolean cadastrar(CategoryDto category) {
 		try {
 			if (category.getId() != null) {
-				throw new CategoryException("Não pode existir ID em cadastrar.", HttpStatus.BAD_REQUEST);
+				throw new CategoryException(ServiceConstantVariables.ID_NOT_PERMITTED.getValor(),
+						HttpStatus.BAD_REQUEST);
 			}
 
 			CategoryEntity categoryEntity = this.mapper.map(category, CategoryEntity.class);
@@ -82,7 +84,8 @@ public class CategoryService implements ICategoryService {
 		} catch (CategoryException c) {
 			throw c;
 		} catch (Exception e) {
-			throw new CategoryException(ERROGENERICO, HttpStatus.INTERNAL_SERVER_ERROR);
+			throw new CategoryException(ServiceConstantVariables.ERRO_GENERICO.getValor(),
+					HttpStatus.INTERNAL_SERVER_ERROR);
 		}
 	}
 
@@ -90,7 +93,7 @@ public class CategoryService implements ICategoryService {
 	public Boolean atualizar(CategoryDto category) {
 		try {
 			if (category.getId() == null) {
-				throw new CategoryException("Categoria sem ID.", HttpStatus.BAD_REQUEST);
+				throw new CategoryException(ServiceConstantVariables.MISSING_ID.getValor(), HttpStatus.BAD_REQUEST);
 			}
 
 			this.consultar(category.getId());
@@ -101,7 +104,8 @@ public class CategoryService implements ICategoryService {
 		} catch (CategoryException c) {
 			throw c;
 		} catch (Exception e) {
-			throw new CategoryException(ERROGENERICO, HttpStatus.INTERNAL_SERVER_ERROR);
+			throw new CategoryException(ServiceConstantVariables.ERRO_GENERICO.getValor(),
+					HttpStatus.INTERNAL_SERVER_ERROR);
 		}
 	}
 
@@ -114,7 +118,8 @@ public class CategoryService implements ICategoryService {
 		} catch (CategoryException c) {
 			throw c;
 		} catch (Exception e) {
-			throw new CategoryException(ERROGENERICO, HttpStatus.INTERNAL_SERVER_ERROR);
+			throw new CategoryException(ServiceConstantVariables.ERRO_GENERICO.getValor(),
+					HttpStatus.INTERNAL_SERVER_ERROR);
 		}
 	}
 
