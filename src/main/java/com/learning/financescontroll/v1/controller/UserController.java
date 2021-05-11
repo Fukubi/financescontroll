@@ -17,11 +17,18 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.learning.financescontroll.config.SwaggerConfig;
 import com.learning.financescontroll.v1.constants.ControllerConstantVariables;
 import com.learning.financescontroll.v1.dto.UserDto;
 import com.learning.financescontroll.v1.model.ResponseModel;
 import com.learning.financescontroll.v1.service.IUserService;
 
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
+import io.swagger.annotations.ApiResponse;
+import io.swagger.annotations.ApiResponses;
+
+@Api(tags = SwaggerConfig.USER)
 @RestController
 @RequestMapping("/vi/usuario")
 public class UserController {
@@ -29,6 +36,9 @@ public class UserController {
 	@Autowired
 	IUserService userService;
 	
+	@ApiOperation("Listar todas os usuários cadastrados")
+	@ApiResponses(value = { @ApiResponse(code = 200, message = "Usuários listadas com sucesso"),
+			@ApiResponse(code = 500, message = "Erro interno no servidor") })
 	@GetMapping
 	public ResponseEntity<ResponseModel<List<UserDto>>> listarUsuarios() {
 		ResponseModel<List<UserDto>> response = new ResponseModel<>();
@@ -39,6 +49,10 @@ public class UserController {
 		return ResponseEntity.status(HttpStatus.OK).body(response);
 	}
 	
+	@ApiOperation("Consultar um usuário cadastrado")
+	@ApiResponses(value = { @ApiResponse(code = 200, message = "Usuário consultado com sucesso"),
+			@ApiResponse(code = 404, message = "Usuário não encontrado"),
+			@ApiResponse(code = 500, message = "Erro interno no servidor") })
 	@GetMapping("/{id}")
 	public ResponseEntity<ResponseModel<UserDto>> consultarUsuario(@PathVariable Long id) {
 		ResponseModel<UserDto> response = new ResponseModel<>();
@@ -54,6 +68,10 @@ public class UserController {
 		return ResponseEntity.status(HttpStatus.OK).body(response);
 	}
 	
+	@ApiOperation("Cadastrar um usuário")
+	@ApiResponses(value = { @ApiResponse(code = 200, message = "Usuário cadastrado com sucesso"),
+			@ApiResponse(code = 400, message = "Erro na requisição do usuário"),
+			@ApiResponse(code = 500, message = "Erro interno no servidor") })
 	@PostMapping
 	public ResponseEntity<ResponseModel<Boolean>> cadastrarUsuario(@Valid @RequestBody UserDto user) {
 		ResponseModel<Boolean> response = new ResponseModel<>();
@@ -69,6 +87,11 @@ public class UserController {
 		return ResponseEntity.status(HttpStatus.CREATED).body(response);
 	}
 	
+	@ApiOperation("Atualizar um usuário cadastrado")
+	@ApiResponses(value = { @ApiResponse(code = 200, message = "Usuário atualizado com sucesso"),
+			@ApiResponse(code = 400, message = "Erro na requisição do cliente"),
+			@ApiResponse(code = 404, message = "Usuário não encontrado"),
+			@ApiResponse(code = 500, message = "Erro interno no servidor") })
 	@PutMapping
 	public ResponseEntity<ResponseModel<Boolean>> atualizarUsuario(@Valid @RequestBody UserDto user) {
 		ResponseModel<Boolean> response = new ResponseModel<>();
@@ -87,6 +110,11 @@ public class UserController {
 		return ResponseEntity.status(HttpStatus.OK).body(response);
 	}
 	
+	@ApiOperation("Deletar um usuário cadastrado")
+	@ApiResponses(value = { @ApiResponse(code = 200, message = "Usuário deletado com sucesso"),
+			@ApiResponse(code = 400, message = "Erro na requisição do cliente"),
+			@ApiResponse(code = 404, message = "Usuário não encontrado"),
+			@ApiResponse(code = 500, message = "Erro interno no servidor") })
 	@DeleteMapping("/{id}")
 	public ResponseEntity<ResponseModel<Boolean>> deletarUsuario(@PathVariable Long id) {
 		ResponseModel<Boolean> response = new ResponseModel<>();

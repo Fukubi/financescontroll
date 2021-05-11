@@ -17,11 +17,18 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.learning.financescontroll.config.SwaggerConfig;
 import com.learning.financescontroll.v1.constants.ControllerConstantVariables;
 import com.learning.financescontroll.v1.dto.EntryDto;
 import com.learning.financescontroll.v1.model.ResponseModel;
 import com.learning.financescontroll.v1.service.IEntryService;
 
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
+import io.swagger.annotations.ApiResponse;
+import io.swagger.annotations.ApiResponses;
+
+@Api(tags = SwaggerConfig.ENTRY)
 @RestController
 @RequestMapping("/v1/entry")
 public class EntryController {
@@ -29,6 +36,9 @@ public class EntryController {
 	@Autowired
 	private IEntryService entryService;
 
+	@ApiOperation("Listar todas os lançamentos cadastrados")
+	@ApiResponses(value = { @ApiResponse(code = 200, message = "Lançamentos listadas com sucesso"),
+			@ApiResponse(code = 500, message = "Erro interno no servidor") })
 	@GetMapping
 	public ResponseEntity<ResponseModel<List<EntryDto>>> listarLancamentos() {
 		ResponseModel<List<EntryDto>> response = new ResponseModel<>();
@@ -39,6 +49,10 @@ public class EntryController {
 		return ResponseEntity.status(HttpStatus.OK).body(response);
 	}
 
+	@ApiOperation("Consultar um lançamento cadastrado")
+	@ApiResponses(value = { @ApiResponse(code = 200, message = "Lançamento consultado com sucesso"),
+			@ApiResponse(code = 404, message = "Lançamento não encontrado"),
+			@ApiResponse(code = 500, message = "Erro interno no servidor") })
 	@GetMapping("/{id}")
 	public ResponseEntity<ResponseModel<EntryDto>> consultarLancamento(@PathVariable Long id) {
 		ResponseModel<EntryDto> response = new ResponseModel<>();
@@ -54,6 +68,10 @@ public class EntryController {
 		return ResponseEntity.status(HttpStatus.OK).body(response);
 	}
 
+	@ApiOperation("Cadastrar um lançamento")
+	@ApiResponses(value = { @ApiResponse(code = 200, message = "Lançamento cadastrado com sucesso"),
+			@ApiResponse(code = 400, message = "Erro na requisição do cliente"),
+			@ApiResponse(code = 500, message = "Erro interno no servidor") })
 	@PostMapping
 	public ResponseEntity<ResponseModel<Boolean>> cadastrarLancamento(@Valid @RequestBody EntryDto entry) {
 		ResponseModel<Boolean> response = new ResponseModel<>();
@@ -69,6 +87,11 @@ public class EntryController {
 		return ResponseEntity.status(HttpStatus.CREATED).body(response);
 	}
 
+	@ApiOperation("Atualizar um lançamento cadastrado")
+	@ApiResponses(value = { @ApiResponse(code = 200, message = "Lançamento atualizado com sucesso"),
+			@ApiResponse(code = 400, message = "Erro na requisição do cliente"),
+			@ApiResponse(code = 404, message = "Lançamento não encontrado"),
+			@ApiResponse(code = 500, message = "Erro interno no servidor") })
 	@PutMapping
 	public ResponseEntity<ResponseModel<Boolean>> atualizarLancamento(@Valid @RequestBody EntryDto entry) {
 		ResponseModel<Boolean> response = new ResponseModel<>();
@@ -87,6 +110,11 @@ public class EntryController {
 		return ResponseEntity.status(HttpStatus.OK).body(response);
 	}
 
+	@ApiOperation("Deletar um lançamento cadastrado")
+	@ApiResponses(value = { @ApiResponse(code = 200, message = "Lançamento deletado com sucesso"),
+			@ApiResponse(code = 400, message = "Erro na requisição do cliente"),
+			@ApiResponse(code = 404, message = "Lançamento não encontrado"),
+			@ApiResponse(code = 500, message = "Erro interno no servidor") })
 	@DeleteMapping("/{id}")
 	public ResponseEntity<ResponseModel<Boolean>> deletarLancamento(@PathVariable Long id) {
 		ResponseModel<Boolean> response = new ResponseModel<>();
