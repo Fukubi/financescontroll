@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 
 import com.learning.financescontroll.v1.exception.CategoryException;
 import com.learning.financescontroll.v1.exception.EntryException;
+import com.learning.financescontroll.v1.exception.UserException;
 import com.learning.financescontroll.v1.model.ResponseModel;
 
 @ControllerAdvice
@@ -42,11 +43,18 @@ public class ResourceHandler {
 	}
 	
 	@ExceptionHandler(EntryException.class)
-	public ResponseEntity<ResponseModel<String>> handlerCategoryException(EntryException e) {
+	public ResponseEntity<ResponseModel<String>> handlerEntryException(EntryException e) {
 		ResponseModel<String> response = new ResponseModel<>();
 		response.setStatusCode(e.getHttpStatus().value());
 		response.setData(e.getMessage());
 		return ResponseEntity.status(e.getHttpStatus()).body(response);
 	}
-
+	
+	@ExceptionHandler(UserException.class)
+	public ResponseEntity<ResponseModel<String>> handlerUserException(UserException u) {
+		ResponseModel<String> response = new ResponseModel<>();
+		response.setStatusCode(u.getHttpStatus().value());
+		response.setData(u.getMessage());
+		return ResponseEntity.status(u.getHttpStatus()).body(response);
+	}
 }
