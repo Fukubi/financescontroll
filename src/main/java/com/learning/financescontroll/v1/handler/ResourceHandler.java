@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 
 import com.learning.financescontroll.v1.exception.CategoryException;
+import com.learning.financescontroll.v1.exception.EntryException;
 import com.learning.financescontroll.v1.model.ResponseModel;
 
 @ControllerAdvice
@@ -38,6 +39,14 @@ public class ResourceHandler {
 		response.setStatusCode(c.getHttpStatus().value());
 		response.setData(c.getMessage());
 		return ResponseEntity.status(c.getHttpStatus()).body(response);
+	}
+	
+	@ExceptionHandler(EntryException.class)
+	public ResponseEntity<ResponseModel<String>> handlerCategoryException(EntryException e) {
+		ResponseModel<String> response = new ResponseModel<>();
+		response.setStatusCode(e.getHttpStatus().value());
+		response.setData(e.getMessage());
+		return ResponseEntity.status(e.getHttpStatus()).body(response);
 	}
 
 }

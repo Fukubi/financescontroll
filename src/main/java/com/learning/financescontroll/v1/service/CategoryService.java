@@ -22,7 +22,7 @@ import com.learning.financescontroll.v1.exception.CategoryException;
 @Service
 public class CategoryService implements ICategoryService {
 
-	private String ERRO_GENERICO = "Erro interno identificado, Contate o suporte";
+	private static final String ERROGENERICO = "Erro interno identificado, Contate o suporte";
 
 	private ICategoryRepository categoryRepository;
 	private ModelMapper mapper;
@@ -49,7 +49,7 @@ public class CategoryService implements ICategoryService {
 		} catch (CategoryException c) {
 			throw c;
 		} catch (Exception e) {
-			throw new CategoryException(ERRO_GENERICO, HttpStatus.INTERNAL_SERVER_ERROR);
+			throw new CategoryException(ERROGENERICO, HttpStatus.INTERNAL_SERVER_ERROR);
 		}
 	}
 
@@ -65,7 +65,7 @@ public class CategoryService implements ICategoryService {
 		} catch (CategoryException c) {
 			throw c;
 		} catch (Exception e) {
-			throw new CategoryException(ERRO_GENERICO, HttpStatus.INTERNAL_SERVER_ERROR);
+			throw new CategoryException(ERROGENERICO, HttpStatus.INTERNAL_SERVER_ERROR);
 		}
 	}
 
@@ -82,7 +82,7 @@ public class CategoryService implements ICategoryService {
 		} catch (CategoryException c) {
 			throw c;
 		} catch (Exception e) {
-			throw new CategoryException(ERRO_GENERICO, HttpStatus.INTERNAL_SERVER_ERROR);
+			throw new CategoryException(ERROGENERICO, HttpStatus.INTERNAL_SERVER_ERROR);
 		}
 	}
 
@@ -90,7 +90,7 @@ public class CategoryService implements ICategoryService {
 	public Boolean atualizar(CategoryDto category) {
 		try {
 			if (category.getId() == null) {
-				return Boolean.FALSE;
+				throw new CategoryException("Categoria sem ID.", HttpStatus.BAD_REQUEST);
 			}
 
 			this.consultar(category.getId());
@@ -101,7 +101,7 @@ public class CategoryService implements ICategoryService {
 		} catch (CategoryException c) {
 			throw c;
 		} catch (Exception e) {
-			throw new CategoryException(ERRO_GENERICO, HttpStatus.INTERNAL_SERVER_ERROR);
+			throw new CategoryException(ERROGENERICO, HttpStatus.INTERNAL_SERVER_ERROR);
 		}
 	}
 
@@ -114,7 +114,7 @@ public class CategoryService implements ICategoryService {
 		} catch (CategoryException c) {
 			throw c;
 		} catch (Exception e) {
-			throw new CategoryException(ERRO_GENERICO, HttpStatus.INTERNAL_SERVER_ERROR);
+			throw new CategoryException(ERROGENERICO, HttpStatus.INTERNAL_SERVER_ERROR);
 		}
 	}
 
