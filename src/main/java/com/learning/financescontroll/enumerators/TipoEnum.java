@@ -4,7 +4,7 @@ import lombok.Getter;
 
 @Getter
 public enum TipoEnum {
-	RECEITA(1, "Receita"),
+	RECEITA(0, "Receita"),
 	DESPESA(1, "Despesa");
 	
 	private final int code;

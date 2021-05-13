@@ -1,5 +1,6 @@
 package com.learning.financescontroll.v1.service;
 
+import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 
@@ -18,6 +19,8 @@ import com.learning.financescontroll.v1.constants.ServiceConstantVariables;
 import com.learning.financescontroll.v1.controller.EntryController;
 import com.learning.financescontroll.v1.dto.EntryDto;
 import com.learning.financescontroll.v1.exception.EntryException;
+import com.learning.financescontroll.v1.model.EntryModel;
+import com.learning.financescontroll.v1.utils.ConverterUtils;
 
 @CacheConfig(cacheNames = "entries")
 @Service
@@ -68,13 +71,21 @@ public class EntryService implements IEntryService {
 	}
 
 	@Override
-	public Boolean cadastrar(EntryDto entry) {
+	public Boolean cadastrar(EntryModel entry) {
 		try {
 			if (entry.getId() != null) {
 				throw new EntryException(ServiceConstantVariables.ID_NOT_PERMITTED.getValor(), HttpStatus.BAD_REQUEST);
 			}
+			
+			if (entry.getCategoriaId() == null) {
+				throw new EntryException(ServiceConstantVariables.MISSING_CATEGORY.getValor(), HttpStatus.BAD_REQUEST);
+			}
+			
+			entry.setData(new Date());
+			
+			EntryDto entryDto = ConverterUtils.converterEntryModelParaDto(entry);
 
-			EntryEntity entryEntity = this.mapper.map(entry, EntryEntity.class);
+			EntryEntity entryEntity = this.mapper.map(entryDto, EntryEntity.class);
 			this.entryRepository.save(entryEntity);
 			return Boolean.TRUE;
 		} catch (EntryException c) {
@@ -85,7 +96,7 @@ public class EntryService implements IEntryService {
 	}
 
 	@Override
-	public Boolean atualizar(EntryDto entry) {
+	public Boolean atualizar(EntryModel entry) {
 		try {
 			if (entry.getId() == null) {
 				throw new EntryException(ServiceConstantVariables.MISSING_ID.getValor(), HttpStatus.BAD_REQUEST);
@@ -93,7 +104,9 @@ public class EntryService implements IEntryService {
 
 			this.consultar(entry.getId());
 
-			EntryEntity entryEntity = this.mapper.map(entry, EntryEntity.class);
+			EntryDto entryDto = ConverterUtils.converterEntryModelParaDto(entry);
+			
+			EntryEntity entryEntity = this.mapper.map(entryDto, EntryEntity.class);
 			this.entryRepository.save(entryEntity);
 			return Boolean.TRUE;
 		} catch (EntryException c) {
@@ -116,4 +129,5 @@ public class EntryService implements IEntryService {
 		}
 	}
 
+	
 }

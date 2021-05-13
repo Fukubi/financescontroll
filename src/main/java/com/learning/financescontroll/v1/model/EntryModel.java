@@ -1,4 +1,4 @@
-package com.learning.financescontroll.v1.dto;
+package com.learning.financescontroll.v1.model;
 
 import java.util.Date;
 
@@ -7,20 +7,12 @@ import javax.validation.constraints.Max;
 import javax.validation.constraints.Min;
 import javax.validation.constraints.NotNull;
 
-import org.springframework.hateoas.RepresentationModel;
-
-import com.learning.financescontroll.entity.CategoryEntity;
 import com.learning.financescontroll.enumerators.TipoEnum;
 
 import lombok.Data;
-import lombok.EqualsAndHashCode;
-import lombok.NoArgsConstructor;
 
 @Data
-@EqualsAndHashCode(callSuper = false)
-@NoArgsConstructor
-public class EntryDto extends RepresentationModel<EntryDto> {
-		
+public class EntryModel {
 	private Long id;
 
 	@NotNull(message = "Tipo não pode ser nulo.")
@@ -36,6 +28,5 @@ public class EntryDto extends RepresentationModel<EntryDto> {
 	private int valor;
 
 	@NotNull(message = "Categoria não pode ser nulo.")
-	private CategoryEntity categoria;
-	
+	private Long categoriaId;
 }

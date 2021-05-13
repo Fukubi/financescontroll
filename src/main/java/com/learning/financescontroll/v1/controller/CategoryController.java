@@ -69,7 +69,7 @@ public class CategoryController {
 	}
 
 	@ApiOperation("Cadastrar uma categoria")
-	@ApiResponses(value = { @ApiResponse(code = 200, message = "Categorias cadastrada com sucesso"),
+	@ApiResponses(value = { @ApiResponse(code = 201, message = "Categoria cadastrada com sucesso"),
 			@ApiResponse(code = 400, message = "Erro na requisição do cliente"),
 			@ApiResponse(code = 500, message = "Erro interno no servidor") })
 	@PostMapping

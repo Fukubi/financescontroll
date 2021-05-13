@@ -20,8 +20,10 @@ import org.springframework.web.bind.annotation.RestController;
 import com.learning.financescontroll.config.SwaggerConfig;
 import com.learning.financescontroll.v1.constants.ControllerConstantVariables;
 import com.learning.financescontroll.v1.dto.EntryDto;
+import com.learning.financescontroll.v1.model.EntryModel;
 import com.learning.financescontroll.v1.model.ResponseModel;
 import com.learning.financescontroll.v1.service.IEntryService;
+import com.learning.financescontroll.v1.utils.ConverterUtils;
 
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -63,7 +65,7 @@ public class EntryController {
 		response.add(WebMvcLinkBuilder.linkTo(WebMvcLinkBuilder.methodOn(EntryController.class).deletarLancamento(id))
 				.withRel(ControllerConstantVariables.EXCLUIR.getValor()));
 		response.add(WebMvcLinkBuilder
-				.linkTo(WebMvcLinkBuilder.methodOn(EntryController.class).atualizarLancamento(response.getData()))
+				.linkTo(WebMvcLinkBuilder.methodOn(EntryController.class).atualizarLancamento(ConverterUtils.converterEntryDtoParaModel(response.getData())))
 				.withRel(ControllerConstantVariables.ATUALIZAR.getValor()));
 		return ResponseEntity.status(HttpStatus.OK).body(response);
 	}
@@ -73,7 +75,7 @@ public class EntryController {
 			@ApiResponse(code = 400, message = "Erro na requisição do cliente"),
 			@ApiResponse(code = 500, message = "Erro interno no servidor") })
 	@PostMapping
-	public ResponseEntity<ResponseModel<Boolean>> cadastrarLancamento(@Valid @RequestBody EntryDto entry) {
+	public ResponseEntity<ResponseModel<Boolean>> cadastrarLancamento(@Valid @RequestBody EntryModel entry) {
 		ResponseModel<Boolean> response = new ResponseModel<>();
 		response.setData(entryService.cadastrar(entry));
 		response.setStatusCode(HttpStatus.CREATED.value());
@@ -93,7 +95,7 @@ public class EntryController {
 			@ApiResponse(code = 404, message = "Lançamento não encontrado"),
 			@ApiResponse(code = 500, message = "Erro interno no servidor") })
 	@PutMapping
-	public ResponseEntity<ResponseModel<Boolean>> atualizarLancamento(@Valid @RequestBody EntryDto entry) {
+	public ResponseEntity<ResponseModel<Boolean>> atualizarLancamento(@Valid @RequestBody EntryModel entry) {
 		ResponseModel<Boolean> response = new ResponseModel<>();
 		response.setData(entryService.atualizar(entry));
 		response.setStatusCode(HttpStatus.OK.value());
