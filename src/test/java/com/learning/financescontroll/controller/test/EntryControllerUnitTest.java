@@ -69,7 +69,7 @@ class EntryControllerUnitTest {
 	void testListarEntry() {
 		Mockito.when(this.entryService.listar()).thenReturn(new ArrayList<EntryDto>());
 
-		ResponseEntity<ResponseModel<List<EntryDto>>> entries = restTemplate.exchange(
+		ResponseEntity<ResponseModel<List<EntryDto>>> entries = restTemplate.withBasicAuth("rasmoo", "msgradecurricular").exchange(
 				"http://localhost:" + this.port + "/v1/entry/", HttpMethod.GET, null,
 				new ParameterizedTypeReference<ResponseModel<List<EntryDto>>>() {
 				});
@@ -82,7 +82,7 @@ class EntryControllerUnitTest {
 	void testConsultarEntry() {
 		Mockito.when(this.entryService.consultar(1L)).thenReturn(entryDto);
 
-		ResponseEntity<ResponseModel<EntryDto>> entries = restTemplate.exchange(
+		ResponseEntity<ResponseModel<EntryDto>> entries = restTemplate.withBasicAuth("rasmoo", "msgradecurricular").exchange(
 				"http://localhost:" + this.port + "/v1/entry/1", HttpMethod.GET, null,
 				new ParameterizedTypeReference<ResponseModel<EntryDto>>() {
 				});
@@ -98,7 +98,7 @@ class EntryControllerUnitTest {
 
 		HttpEntity<EntryModel> request = new HttpEntity<>(entryModel);
 
-		ResponseEntity<ResponseModel<Boolean>> entries = restTemplate.exchange(
+		ResponseEntity<ResponseModel<Boolean>> entries = restTemplate.withBasicAuth("rasmoo", "msgradecurricular").exchange(
 				"http://localhost:" + this.port + "/v1/entry/", HttpMethod.POST, request,
 				new ParameterizedTypeReference<ResponseModel<Boolean>>() {
 				});
@@ -116,7 +116,7 @@ class EntryControllerUnitTest {
 
 		HttpEntity<EntryModel> request = new HttpEntity<>(entryModel);
 
-		ResponseEntity<ResponseModel<Boolean>> entries = restTemplate.exchange(
+		ResponseEntity<ResponseModel<Boolean>> entries = restTemplate.withBasicAuth("rasmoo", "msgradecurricular").exchange(
 				"http://localhost:" + this.port + "/v1/entry/", HttpMethod.PUT, request,
 				new ParameterizedTypeReference<ResponseModel<Boolean>>() {
 				});
@@ -130,7 +130,7 @@ class EntryControllerUnitTest {
 	void testExcluirEntry() {
 		Mockito.when(this.entryService.excluir(1L)).thenReturn(Boolean.TRUE);
 
-		ResponseEntity<ResponseModel<Boolean>> entries = restTemplate.exchange(
+		ResponseEntity<ResponseModel<Boolean>> entries = restTemplate.withBasicAuth("rasmoo", "msgradecurricular").exchange(
 				"http://localhost:" + this.port + "/v1/entry/1", HttpMethod.DELETE, null,
 				new ParameterizedTypeReference<ResponseModel<Boolean>>() {
 				});

@@ -10,6 +10,7 @@ import org.springframework.cache.annotation.CacheConfig;
 import org.springframework.cache.annotation.CachePut;
 import org.springframework.hateoas.server.mvc.WebMvcLinkBuilder;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import com.learning.financescontroll.entity.UserEntity;
@@ -24,12 +25,15 @@ import com.learning.financescontroll.v1.exception.UserException;
 public class UserService implements IUserService {
 
 	private IUserRepository userRepository;
+	private PasswordEncoder pass;
+	
 	private ModelMapper mapper;
 
 	@Autowired
-	public UserService(IUserRepository userRepository) {
+	public UserService(IUserRepository userRepository, PasswordEncoder pass) {
 		this.mapper = new ModelMapper();
 		this.userRepository = userRepository;
+		this.pass = pass;
 	}
 
 	@CachePut(unless = "#result.size()<3")
@@ -74,6 +78,8 @@ public class UserService implements IUserService {
 			if (user.getId() != null) {
 				throw new UserException(ServiceConstantVariables.ID_NOT_PERMITTED.getValor(), HttpStatus.BAD_REQUEST);
 			}
+
+			user.getCredenciais().setPassword(this.pass.encode(user.getCredenciais().getPassword()));
 
 			UserEntity userEntity = this.mapper.map(user, UserEntity.class);
 			this.userRepository.save(userEntity);

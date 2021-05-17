@@ -100,7 +100,7 @@ class EntryControllerIntegratedTest {
 
 	@Test
 	void testListarEntries() {
-		ResponseEntity<ResponseModel<List<EntryDto>>> entries = restTemplate.exchange(
+		ResponseEntity<ResponseModel<List<EntryDto>>> entries = restTemplate.withBasicAuth("rasmoo", "msgradecurricular").exchange(
 				"http://localhost:" + this.port + "/v1/entry/", HttpMethod.GET, null,
 				new ParameterizedTypeReference<ResponseModel<List<EntryDto>>>() {
 				});
@@ -115,7 +115,7 @@ class EntryControllerIntegratedTest {
 		List<EntryEntity> entryList = this.entryRepository.findAll();
 		Long id = entryList.get(0).getId();
 
-		ResponseEntity<ResponseModel<EntryDto>> entries = restTemplate.exchange(
+		ResponseEntity<ResponseModel<EntryDto>> entries = restTemplate.withBasicAuth("rasmoo", "msgradecurricular").exchange(
 				"http://localhost:" + this.port + "/v1/entry/" + id, HttpMethod.GET, null,
 				new ParameterizedTypeReference<ResponseModel<EntryDto>>() {
 				});
@@ -136,7 +136,7 @@ class EntryControllerIntegratedTest {
 
 		HttpEntity<EntryModel> request = new HttpEntity<>(ConverterUtils.converterEntryEntityParaModel(entry));
 
-		ResponseEntity<ResponseModel<Boolean>> entries = restTemplate.exchange(
+		ResponseEntity<ResponseModel<Boolean>> entries = restTemplate.withBasicAuth("rasmoo", "msgradecurricular").exchange(
 				"http://localhost:" + this.port + "/v1/entry/", HttpMethod.PUT, request,
 				new ParameterizedTypeReference<ResponseModel<Boolean>>() {
 				});
@@ -158,7 +158,7 @@ class EntryControllerIntegratedTest {
 
 		HttpEntity<EntryModel> request = new HttpEntity<>(entryModel);
 
-		ResponseEntity<ResponseModel<Boolean>> entries = restTemplate.exchange(
+		ResponseEntity<ResponseModel<Boolean>> entries = restTemplate.withBasicAuth("rasmoo", "msgradecurricular").exchange(
 				"http://localhost:" + this.port + "/v1/entry/", HttpMethod.POST, request,
 				new ParameterizedTypeReference<ResponseModel<Boolean>>() {
 				});
@@ -175,7 +175,7 @@ class EntryControllerIntegratedTest {
 		List<EntryEntity> entryList = this.entryRepository.findAll();
 		Long id = entryList.get(0).getId();
 
-		ResponseEntity<ResponseModel<Boolean>> entries = restTemplate.exchange(
+		ResponseEntity<ResponseModel<Boolean>> entries = restTemplate.withBasicAuth("rasmoo", "msgradecurricular").exchange(
 				"http://localhost:" + this.port + "/v1/entry/" + id, HttpMethod.DELETE, null,
 				new ParameterizedTypeReference<ResponseModel<Boolean>>() {
 				});

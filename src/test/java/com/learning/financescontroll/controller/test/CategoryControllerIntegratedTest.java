@@ -68,7 +68,7 @@ class CategoryControllerIntegratedTest {
 
 	@Test
 	void testListarCategoria() {
-		ResponseEntity<ResponseModel<List<CategoryDto>>> categorias = restTemplate.exchange(
+		ResponseEntity<ResponseModel<List<CategoryDto>>> categorias = restTemplate.withBasicAuth("rasmoo", "msgradecurricular").exchange(
 				"http://localhost:" + this.port + "/v1/categoria/", HttpMethod.GET, null,
 				new ParameterizedTypeReference<ResponseModel<List<CategoryDto>>>() {
 				});
@@ -83,7 +83,7 @@ class CategoryControllerIntegratedTest {
 		List<CategoryEntity> categoryList = this.categoryRepository.findAll();
 		Long id = categoryList.get(0).getId();
 		
-		ResponseEntity<ResponseModel<CategoryDto>> categorias = restTemplate.exchange(
+		ResponseEntity<ResponseModel<CategoryDto>> categorias = restTemplate.withBasicAuth("rasmoo", "msgradecurricular").exchange(
 				"http://localhost:" + this.port + "/v1/categoria/" + id, HttpMethod.GET, null,
 				new ParameterizedTypeReference<ResponseModel<CategoryDto>>() {
 				});
@@ -104,7 +104,7 @@ class CategoryControllerIntegratedTest {
 		
 		HttpEntity<CategoryEntity> request = new HttpEntity<>(category);
 		
-		ResponseEntity<ResponseModel<Boolean>> categorias = restTemplate.exchange(
+		ResponseEntity<ResponseModel<Boolean>> categorias = restTemplate.withBasicAuth("rasmoo", "msgradecurricular").exchange(
 				"http://localhost:" + this.port + "/v1/categoria/", HttpMethod.PUT, request,
 				new ParameterizedTypeReference<ResponseModel<Boolean>>() {
 				});
@@ -124,7 +124,7 @@ class CategoryControllerIntegratedTest {
 		
 		HttpEntity<CategoryEntity> request = new HttpEntity<>(categoryEntity4);
 		
-		ResponseEntity<ResponseModel<Boolean>> categorias = restTemplate.exchange(
+		ResponseEntity<ResponseModel<Boolean>> categorias = restTemplate.withBasicAuth("rasmoo", "msgradecurricular").exchange(
 				"http://localhost:" + this.port + "/v1/categoria/", HttpMethod.POST, request,
 				new ParameterizedTypeReference<ResponseModel<Boolean>>() {
 				});
@@ -141,7 +141,7 @@ class CategoryControllerIntegratedTest {
 		List<CategoryEntity> categoryList = this.categoryRepository.findAll();
 		Long id = categoryList.get(0).getId();
 		
-		ResponseEntity<ResponseModel<Boolean>> categorias = restTemplate.exchange(
+		ResponseEntity<ResponseModel<Boolean>> categorias = restTemplate.withBasicAuth("rasmoo", "msgradecurricular").exchange(
 				"http://localhost:" + this.port + "/v1/categoria/" + id, HttpMethod.DELETE, null,
 				new ParameterizedTypeReference<ResponseModel<Boolean>>() {
 				});

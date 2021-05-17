@@ -65,7 +65,7 @@ class UserControllerUnitTest {
 	void testListarUsuarios() {
 		Mockito.when(this.userService.listar()).thenReturn(new ArrayList<UserDto>());
 
-		ResponseEntity<ResponseModel<List<UserDto>>> usuarios = restTemplate.exchange(
+		ResponseEntity<ResponseModel<List<UserDto>>> usuarios = restTemplate.withBasicAuth("rasmoo", "msgradecurricular").exchange(
 				"http://localhost:" + this.port + "/v1/usuario/", HttpMethod.GET, null,
 				new ParameterizedTypeReference<ResponseModel<List<UserDto>>>() {
 				});
@@ -78,7 +78,7 @@ class UserControllerUnitTest {
 	void testConsultarUsuario() {
 		Mockito.when(this.userService.consultar(1L)).thenReturn(userDto);
 
-		ResponseEntity<ResponseModel<UserDto>> usuarios = restTemplate.exchange(
+		ResponseEntity<ResponseModel<UserDto>> usuarios = restTemplate.withBasicAuth("rasmoo", "msgradecurricular").exchange(
 				"http://localhost:" + this.port + "/v1/usuario/1", HttpMethod.GET, null,
 				new ParameterizedTypeReference<ResponseModel<UserDto>>() {
 				});
@@ -93,7 +93,7 @@ class UserControllerUnitTest {
 
 		HttpEntity<UserDto> request = new HttpEntity<>(userDto);
 
-		ResponseEntity<ResponseModel<Boolean>> usuarios = restTemplate.exchange(
+		ResponseEntity<ResponseModel<Boolean>> usuarios = restTemplate.withBasicAuth("rasmoo", "msgradecurricular").exchange(
 				"http://localhost:" + this.port + "/v1/usuario/", HttpMethod.POST, request,
 				new ParameterizedTypeReference<ResponseModel<Boolean>>() {
 				});
@@ -109,7 +109,7 @@ class UserControllerUnitTest {
 
 		HttpEntity<UserDto> request = new HttpEntity<>(userDto);
 
-		ResponseEntity<ResponseModel<Boolean>> usuarios = restTemplate.exchange(
+		ResponseEntity<ResponseModel<Boolean>> usuarios = restTemplate.withBasicAuth("rasmoo", "msgradecurricular").exchange(
 				"http://localhost:" + this.port + "/v1/usuario/", HttpMethod.PUT, request,
 				new ParameterizedTypeReference<ResponseModel<Boolean>>() {
 				});
@@ -123,7 +123,7 @@ class UserControllerUnitTest {
 	void testExcluirCategoria() {
 		Mockito.when(this.userService.excluir(1L)).thenReturn(Boolean.TRUE);
 
-		ResponseEntity<ResponseModel<Boolean>> usuarios = restTemplate.exchange(
+		ResponseEntity<ResponseModel<Boolean>> usuarios = restTemplate.withBasicAuth("rasmoo", "msgradecurricular").exchange(
 				"http://localhost:" + this.port + "/v1/usuario/1", HttpMethod.DELETE, null,
 				new ParameterizedTypeReference<ResponseModel<Boolean>>() {
 				});

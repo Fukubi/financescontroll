@@ -36,7 +36,7 @@ public class UserEntity implements Serializable {
 	private String nome;
 
 	@Column(name = "credenciais")
-	private CredentialEntity credenciais;
+	private CredentialEntity credenciais = new CredentialEntity();
 
 	@OneToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
 	@JoinColumn(name = "aula_id")

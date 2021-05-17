@@ -92,7 +92,7 @@ class UserControllerIntegratedTest {
 	
 	@Test
 	void testListarUsuarios() {
-		ResponseEntity<ResponseModel<List<UserDto>>> usuarios = restTemplate.exchange(
+		ResponseEntity<ResponseModel<List<UserDto>>> usuarios = restTemplate.withBasicAuth("rasmoo", "msgradecurricular").exchange(
 				"http://localhost:" + this.port + "/v1/usuario/", HttpMethod.GET, null,
 				new ParameterizedTypeReference<ResponseModel<List<UserDto>>>() {
 				});
@@ -107,7 +107,7 @@ class UserControllerIntegratedTest {
 		List<UserEntity> userList = this.userRepository.findAll();
 		Long id = userList.get(0).getId();
 		
-		ResponseEntity<ResponseModel<UserDto>> usuarios = restTemplate.exchange(
+		ResponseEntity<ResponseModel<UserDto>> usuarios = restTemplate.withBasicAuth("rasmoo", "msgradecurricular").exchange(
 				"http://localhost:" + this.port + "/v1/usuario/" + id, HttpMethod.GET, null,
 				new ParameterizedTypeReference<ResponseModel<UserDto>>() {
 				});
@@ -129,7 +129,7 @@ class UserControllerIntegratedTest {
 		
 		HttpEntity<UserEntity> request = new HttpEntity<>(usuario);
 		
-		ResponseEntity<ResponseModel<Boolean>> usuarios = restTemplate.exchange(
+		ResponseEntity<ResponseModel<Boolean>> usuarios = restTemplate.withBasicAuth("rasmoo", "msgradecurricular").exchange(
 				"http://localhost:" + this.port + "/v1/usuario/", HttpMethod.PUT, request,
 				new ParameterizedTypeReference<ResponseModel<Boolean>>() {
 				});
@@ -155,7 +155,7 @@ class UserControllerIntegratedTest {
 		
 		HttpEntity<UserEntity> request = new HttpEntity<>(userEntity4);
 		
-		ResponseEntity<ResponseModel<Boolean>> usuarios = restTemplate.exchange(
+		ResponseEntity<ResponseModel<Boolean>> usuarios = restTemplate.withBasicAuth("rasmoo", "msgradecurricular").exchange(
 				"http://localhost:" + this.port + "/v1/usuario/", HttpMethod.POST, request,
 				new ParameterizedTypeReference<ResponseModel<Boolean>>() {
 				});
@@ -172,7 +172,7 @@ class UserControllerIntegratedTest {
 		List<UserEntity> userList = this.userRepository.findAll();
 		Long id = userList.get(0).getId();
 		
-		ResponseEntity<ResponseModel<Boolean>> usuarios = restTemplate.exchange(
+		ResponseEntity<ResponseModel<Boolean>> usuarios = restTemplate.withBasicAuth("rasmoo", "msgradecurricular").exchange(
 				"http://localhost:" + this.port + "/v1/usuario/" + id, HttpMethod.DELETE, null,
 				new ParameterizedTypeReference<ResponseModel<Boolean>>() {
 				});

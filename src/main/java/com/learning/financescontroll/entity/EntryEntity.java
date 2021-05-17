@@ -3,6 +3,7 @@ package com.learning.financescontroll.entity;
 import java.io.Serializable;
 import java.util.Date;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
@@ -42,7 +43,7 @@ public class EntryEntity implements Serializable {
 	@Column(name = "valor")
 	private int valor;
 	
-	@OneToOne(fetch = FetchType.EAGER)
+	@OneToOne(fetch = FetchType.EAGER, cascade = CascadeType.REFRESH)
 	@JoinColumn(name = "categoria_id")
 	private CategoryEntity categoria;
 }

@@ -57,7 +57,7 @@ class CategoryControllerUnitTest {
 	void testListarCategorias() {
 		Mockito.when(this.categoryService.listar()).thenReturn(new ArrayList<CategoryDto>());
 
-		ResponseEntity<ResponseModel<List<CategoryDto>>> categorias = restTemplate.exchange(
+		ResponseEntity<ResponseModel<List<CategoryDto>>> categorias = restTemplate.withBasicAuth("rasmoo", "msgradecurricular").exchange(
 				"http://localhost:" + this.port + "/v1/categoria/", HttpMethod.GET, null,
 				new ParameterizedTypeReference<ResponseModel<List<CategoryDto>>>() {
 				});
@@ -70,7 +70,7 @@ class CategoryControllerUnitTest {
 	void testConsultarCategoria() {
 		Mockito.when(this.categoryService.consultar(1L)).thenReturn(categoryDto);
 
-		ResponseEntity<ResponseModel<CategoryDto>> categorias = restTemplate.exchange(
+		ResponseEntity<ResponseModel<CategoryDto>> categorias = restTemplate.withBasicAuth("rasmoo", "msgradecurricular").exchange(
 				"http://localhost:" + this.port + "/v1/categoria/1", HttpMethod.GET, null,
 				new ParameterizedTypeReference<ResponseModel<CategoryDto>>() {
 				});
@@ -85,7 +85,7 @@ class CategoryControllerUnitTest {
 
 		HttpEntity<CategoryDto> request = new HttpEntity<>(categoryDto);
 
-		ResponseEntity<ResponseModel<Boolean>> categorias = restTemplate.exchange(
+		ResponseEntity<ResponseModel<Boolean>> categorias = restTemplate.withBasicAuth("rasmoo", "msgradecurricular").exchange(
 				"http://localhost:" + this.port + "/v1/categoria/", HttpMethod.POST, request,
 				new ParameterizedTypeReference<ResponseModel<Boolean>>() {
 				});
@@ -101,7 +101,7 @@ class CategoryControllerUnitTest {
 
 		HttpEntity<CategoryDto> request = new HttpEntity<>(categoryDto);
 
-		ResponseEntity<ResponseModel<Boolean>> categorias = restTemplate.exchange(
+		ResponseEntity<ResponseModel<Boolean>> categorias = restTemplate.withBasicAuth("rasmoo", "msgradecurricular").exchange(
 				"http://localhost:" + this.port + "/v1/categoria/", HttpMethod.PUT, request,
 				new ParameterizedTypeReference<ResponseModel<Boolean>>() {
 				});
@@ -115,7 +115,7 @@ class CategoryControllerUnitTest {
 	void testExcluirCategoria() {
 		Mockito.when(this.categoryService.excluir(1L)).thenReturn(Boolean.TRUE);
 
-		ResponseEntity<ResponseModel<Boolean>> categorias = restTemplate.exchange(
+		ResponseEntity<ResponseModel<Boolean>> categorias = restTemplate.withBasicAuth("rasmoo", "msgradecurricular").exchange(
 				"http://localhost:" + this.port + "/v1/categoria/1", HttpMethod.DELETE, null,
 				new ParameterizedTypeReference<ResponseModel<Boolean>>() {
 				});
