@@ -30,7 +30,7 @@ import io.swagger.annotations.ApiResponses;
 
 @Api(tags = SwaggerConfig.USER)
 @RestController
-@RequestMapping("/vi/usuario")
+@RequestMapping("/v1/usuario")
 public class UserController {
 	
 	@Autowired

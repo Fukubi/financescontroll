@@ -13,7 +13,9 @@ import org.springframework.hateoas.server.mvc.WebMvcLinkBuilder;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
+import com.learning.financescontroll.entity.CategoryEntity;
 import com.learning.financescontroll.entity.EntryEntity;
+import com.learning.financescontroll.repository.ICategoryRepository;
 import com.learning.financescontroll.repository.IEntryRepository;
 import com.learning.financescontroll.v1.constants.ServiceConstantVariables;
 import com.learning.financescontroll.v1.controller.EntryController;
@@ -27,11 +29,13 @@ import com.learning.financescontroll.v1.utils.ConverterUtils;
 public class EntryService implements IEntryService {
 
 	private IEntryRepository entryRepository;
+	private ICategoryRepository categoryRepository;
 	private ModelMapper mapper;
 
 	@Autowired
-	public EntryService(IEntryRepository entryRepository) {
+	public EntryService(IEntryRepository entryRepository, ICategoryRepository categoryRepository) {
 		this.mapper = new ModelMapper();
+		this.categoryRepository = categoryRepository;
 		this.entryRepository = entryRepository;
 	}
 
@@ -50,7 +54,8 @@ public class EntryService implements IEntryService {
 		} catch (EntryException c) {
 			throw c;
 		} catch (Exception e) {
-			throw new EntryException(ServiceConstantVariables.ERRO_GENERICO.getValor(), HttpStatus.INTERNAL_SERVER_ERROR);
+			throw new EntryException(ServiceConstantVariables.ERRO_GENERICO.getValor(),
+					HttpStatus.INTERNAL_SERVER_ERROR);
 		}
 	}
 
@@ -66,7 +71,8 @@ public class EntryService implements IEntryService {
 		} catch (EntryException c) {
 			throw c;
 		} catch (Exception e) {
-			throw new EntryException(ServiceConstantVariables.ERRO_GENERICO.getValor(), HttpStatus.INTERNAL_SERVER_ERROR);
+			throw new EntryException(ServiceConstantVariables.ERRO_GENERICO.getValor(),
+					HttpStatus.INTERNAL_SERVER_ERROR);
 		}
 	}
 
@@ -76,14 +82,22 @@ public class EntryService implements IEntryService {
 			if (entry.getId() != null) {
 				throw new EntryException(ServiceConstantVariables.ID_NOT_PERMITTED.getValor(), HttpStatus.BAD_REQUEST);
 			}
-			
+
 			if (entry.getCategoriaId() == null) {
 				throw new EntryException(ServiceConstantVariables.MISSING_CATEGORY.getValor(), HttpStatus.BAD_REQUEST);
 			}
-			
-			entry.setData(new Date());
-			
+
+			if (entry.getData() == null) {
+				entry.setData(new Date());
+			}
+
+			Optional<CategoryEntity> categoryOptional = this.categoryRepository.findById(entry.getCategoriaId());
+			if (categoryOptional.isEmpty()) {
+				throw new EntryException(ServiceConstantVariables.NOT_FOUND.getValor(), HttpStatus.BAD_REQUEST);
+			}
 			EntryDto entryDto = ConverterUtils.converterEntryModelParaDto(entry);
+			entryDto.setCategoria(categoryOptional.get());
+			
 
 			EntryEntity entryEntity = this.mapper.map(entryDto, EntryEntity.class);
 			this.entryRepository.save(entryEntity);
@@ -91,7 +105,8 @@ public class EntryService implements IEntryService {
 		} catch (EntryException c) {
 			throw c;
 		} catch (Exception e) {
-			throw new EntryException(ServiceConstantVariables.ERRO_GENERICO.getValor(), HttpStatus.INTERNAL_SERVER_ERROR);
+			throw new EntryException(ServiceConstantVariables.ERRO_GENERICO.getValor(),
+					HttpStatus.INTERNAL_SERVER_ERROR);
 		}
 	}
 
@@ -104,15 +119,21 @@ public class EntryService implements IEntryService {
 
 			this.consultar(entry.getId());
 
+			Optional<CategoryEntity> categoryOptional = this.categoryRepository.findById(entry.getCategoriaId());
+			if (categoryOptional.isEmpty()) {
+				throw new EntryException(ServiceConstantVariables.NOT_FOUND.getValor(), HttpStatus.BAD_REQUEST);
+			}
 			EntryDto entryDto = ConverterUtils.converterEntryModelParaDto(entry);
-			
+			entryDto.setCategoria(categoryOptional.get());
+
 			EntryEntity entryEntity = this.mapper.map(entryDto, EntryEntity.class);
 			this.entryRepository.save(entryEntity);
 			return Boolean.TRUE;
 		} catch (EntryException c) {
 			throw c;
 		} catch (Exception e) {
-			throw new EntryException(ServiceConstantVariables.ERRO_GENERICO.getValor(), HttpStatus.INTERNAL_SERVER_ERROR);
+			throw new EntryException(ServiceConstantVariables.ERRO_GENERICO.getValor(),
+					HttpStatus.INTERNAL_SERVER_ERROR);
 		}
 	}
 
@@ -125,9 +146,9 @@ public class EntryService implements IEntryService {
 		} catch (EntryException c) {
 			throw c;
 		} catch (Exception e) {
-			throw new EntryException(ServiceConstantVariables.ERRO_GENERICO.getValor(), HttpStatus.INTERNAL_SERVER_ERROR);
+			throw new EntryException(ServiceConstantVariables.ERRO_GENERICO.getValor(),
+					HttpStatus.INTERNAL_SERVER_ERROR);
 		}
 	}
 
-	
 }

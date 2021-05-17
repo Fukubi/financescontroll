@@ -36,7 +36,8 @@ public class UserService implements IUserService {
 	@Override
 	public List<UserDto> listar() {
 		try {
-			List<UserDto> userDto = this.mapper.map(this.userRepository.findAll(), new TypeToken<List<UserDto>>() {
+			List<UserEntity> userEntityLisy = this.userRepository.findAll();
+			List<UserDto> userDto = this.mapper.map(userEntityLisy, new TypeToken<List<UserDto>>() {
 			}.getType());
 
 			userDto.forEach(user -> user.add(WebMvcLinkBuilder

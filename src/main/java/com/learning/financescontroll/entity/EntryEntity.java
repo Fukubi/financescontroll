@@ -42,7 +42,7 @@ public class EntryEntity implements Serializable {
 	@Column(name = "valor")
 	private int valor;
 	
-	@OneToOne(fetch = FetchType.LAZY)
+	@OneToOne(fetch = FetchType.EAGER)
 	@JoinColumn(name = "categoria_id")
 	private CategoryEntity categoria;
 }
