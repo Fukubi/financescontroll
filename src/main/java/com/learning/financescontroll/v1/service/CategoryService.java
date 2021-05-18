@@ -42,7 +42,8 @@ public class CategoryService implements ICategoryService {
 	@Override
 	public List<CategoryDto> listar() {
 		try {
-			List<CategoryDto> categoryDto = this.mapper.map(this.categoryRepository.findAll(),
+			UserEntity usuario = this.findAuthUser();
+			List<CategoryDto> categoryDto = this.mapper.map(this.categoryRepository.findAllByUserId(usuario.getId()),
 					new TypeToken<List<CategoryDto>>() {
 					}.getType());
 
@@ -83,16 +84,11 @@ public class CategoryService implements ICategoryService {
 				throw new CategoryException(ServiceConstantVariables.ID_NOT_PERMITTED.getValor(),
 						HttpStatus.BAD_REQUEST);
 			}
-			
-			Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-			Optional<UserEntity> usuario = this.userRepository.findByCredenciaisUsername(auth.getName());
-			
-			if(usuario.isEmpty()) {
-				throw new CategoryException("Usuário não encontrado", HttpStatus.NOT_FOUND);
-			}
+
+			UserEntity usuario = this.findAuthUser();
 
 			CategoryEntity categoryEntity = this.mapper.map(category, CategoryEntity.class);
-			categoryEntity.setUser(usuario.get());
+			categoryEntity.setUser(usuario);
 			this.categoryRepository.save(categoryEntity);
 			return Boolean.TRUE;
 		} catch (CategoryException c) {
@@ -111,18 +107,17 @@ public class CategoryService implements ICategoryService {
 			}
 
 			this.consultar(category.getId());
-			
-			Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-			Optional<UserEntity> usuario = this.userRepository.findByCredenciaisUsername(auth.getName());
-			
-			if (usuario.isEmpty()) {
-				throw new CategoryException("Usuário não encontrado", HttpStatus.NOT_FOUND);
-			}
+			Optional<CategoryEntity> categoryOptional = this.categoryRepository.findById(category.getId());
 
-			CategoryEntity categoryEntity = this.mapper.map(category, CategoryEntity.class);
-			categoryEntity.setUser(usuario.get());
-			this.categoryRepository.save(categoryEntity);
-			return Boolean.TRUE;
+			UserEntity usuario = this.findAuthUser();
+			if (categoryOptional.isPresent() && categoryOptional.get().getUser().getId().equals(usuario.getId())) {
+				CategoryEntity categoryEntity = this.mapper.map(category, CategoryEntity.class);
+
+				categoryEntity.setUser(usuario);
+				this.categoryRepository.save(categoryEntity);
+				return Boolean.TRUE;
+			}
+			throw new CategoryException(ServiceConstantVariables.NOT_FOUND.getValor(), HttpStatus.NOT_FOUND);
 		} catch (CategoryException c) {
 			throw c;
 		} catch (Exception e) {
@@ -145,4 +140,14 @@ public class CategoryService implements ICategoryService {
 		}
 	}
 
+	private UserEntity findAuthUser() {
+		Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+		Optional<UserEntity> usuario = this.userRepository.findByCredenciaisUsername(auth.getName());
+
+		if (usuario.isEmpty()) {
+			throw new CategoryException("Usuário não encontrado", HttpStatus.NOT_FOUND);
+		}
+
+		return usuario.get();
+	}
 }
