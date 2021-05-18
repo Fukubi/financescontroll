@@ -1,5 +1,7 @@
 package com.learning.financescontroll.entity;
 
+import java.io.Serializable;
+
 import javax.persistence.Embeddable;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
@@ -11,7 +13,9 @@ import lombok.NoArgsConstructor;
 @Embeddable
 @Data
 @NoArgsConstructor
-public class CredentialEntity {
+public class CredentialEntity implements Serializable {
+
+	private static final long serialVersionUID = -8710766553860617257L;
 
 	@JsonInclude(Include.NON_NULL)
 	private String username;

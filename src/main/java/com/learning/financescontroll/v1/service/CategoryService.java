@@ -10,10 +10,14 @@ import org.springframework.cache.annotation.CacheConfig;
 import org.springframework.cache.annotation.CachePut;
 import org.springframework.hateoas.server.mvc.WebMvcLinkBuilder;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
 import com.learning.financescontroll.entity.CategoryEntity;
+import com.learning.financescontroll.entity.UserEntity;
 import com.learning.financescontroll.repository.ICategoryRepository;
+import com.learning.financescontroll.repository.IUserRepository;
 import com.learning.financescontroll.v1.constants.ServiceConstantVariables;
 import com.learning.financescontroll.v1.controller.CategoryController;
 import com.learning.financescontroll.v1.dto.CategoryDto;
@@ -24,12 +28,14 @@ import com.learning.financescontroll.v1.exception.CategoryException;
 public class CategoryService implements ICategoryService {
 
 	private ICategoryRepository categoryRepository;
+	private IUserRepository userRepository;
 	private ModelMapper mapper;
 
 	@Autowired
-	public CategoryService(ICategoryRepository categoryRepository) {
+	public CategoryService(ICategoryRepository categoryRepository, IUserRepository userRepository) {
 		this.mapper = new ModelMapper();
 		this.categoryRepository = categoryRepository;
+		this.userRepository = userRepository;
 	}
 
 	@CachePut(unless = "#result.size()<3")
@@ -77,8 +83,16 @@ public class CategoryService implements ICategoryService {
 				throw new CategoryException(ServiceConstantVariables.ID_NOT_PERMITTED.getValor(),
 						HttpStatus.BAD_REQUEST);
 			}
+			
+			Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+			Optional<UserEntity> usuario = this.userRepository.findByCredenciaisUsername(auth.getName());
+			
+			if(usuario.isEmpty()) {
+				throw new CategoryException("Usuário não encontrado", HttpStatus.NOT_FOUND);
+			}
 
 			CategoryEntity categoryEntity = this.mapper.map(category, CategoryEntity.class);
+			categoryEntity.setUser(usuario.get());
 			this.categoryRepository.save(categoryEntity);
 			return Boolean.TRUE;
 		} catch (CategoryException c) {
@@ -97,8 +111,16 @@ public class CategoryService implements ICategoryService {
 			}
 
 			this.consultar(category.getId());
+			
+			Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+			Optional<UserEntity> usuario = this.userRepository.findByCredenciaisUsername(auth.getName());
+			
+			if (usuario.isEmpty()) {
+				throw new CategoryException("Usuário não encontrado", HttpStatus.NOT_FOUND);
+			}
 
 			CategoryEntity categoryEntity = this.mapper.map(category, CategoryEntity.class);
+			categoryEntity.setUser(usuario.get());
 			this.categoryRepository.save(categoryEntity);
 			return Boolean.TRUE;
 		} catch (CategoryException c) {
