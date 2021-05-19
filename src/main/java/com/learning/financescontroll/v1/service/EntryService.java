@@ -11,12 +11,16 @@ import org.springframework.cache.annotation.CacheConfig;
 import org.springframework.cache.annotation.CachePut;
 import org.springframework.hateoas.server.mvc.WebMvcLinkBuilder;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
 import com.learning.financescontroll.entity.CategoryEntity;
 import com.learning.financescontroll.entity.EntryEntity;
+import com.learning.financescontroll.entity.UserEntity;
 import com.learning.financescontroll.repository.ICategoryRepository;
 import com.learning.financescontroll.repository.IEntryRepository;
+import com.learning.financescontroll.repository.IUserRepository;
 import com.learning.financescontroll.v1.constants.ServiceConstantVariables;
 import com.learning.financescontroll.v1.controller.EntryController;
 import com.learning.financescontroll.v1.dto.EntryDto;
@@ -30,21 +34,26 @@ public class EntryService implements IEntryService {
 
 	private IEntryRepository entryRepository;
 	private ICategoryRepository categoryRepository;
+	private IUserRepository userRepository;
 	private ModelMapper mapper;
 
 	@Autowired
-	public EntryService(IEntryRepository entryRepository, ICategoryRepository categoryRepository) {
+	public EntryService(IEntryRepository entryRepository, ICategoryRepository categoryRepository,
+			IUserRepository userRepository) {
 		this.mapper = new ModelMapper();
 		this.categoryRepository = categoryRepository;
 		this.entryRepository = entryRepository;
+		this.userRepository = userRepository;
 	}
 
 	@CachePut("#result.size()<3")
 	@Override
 	public List<EntryDto> listar() {
 		try {
-			List<EntryDto> entryDto = this.mapper.map(this.entryRepository.findAll(), new TypeToken<List<EntryDto>>() {
-			}.getType());
+			UserEntity user = this.findAuthUser();
+			List<EntryDto> entryDto = this.mapper.map(this.entryRepository.findAllByUserId(user.getId()),
+					new TypeToken<List<EntryDto>>() {
+					}.getType());
 
 			entryDto.forEach(entry -> entry.add(WebMvcLinkBuilder
 					.linkTo(WebMvcLinkBuilder.methodOn(EntryController.class).consultarLancamento(entry.getId()))
@@ -91,15 +100,22 @@ public class EntryService implements IEntryService {
 				entry.setData(new Date());
 			}
 
+			UserEntity user = this.findAuthUser();
+			
 			Optional<CategoryEntity> categoryOptional = this.categoryRepository.findById(entry.getCategoriaId());
 			if (categoryOptional.isEmpty()) {
 				throw new EntryException(ServiceConstantVariables.NOT_FOUND.getValor(), HttpStatus.BAD_REQUEST);
 			}
+			
+			if (!categoryOptional.get().getUser().getId().equals(user.getId())) {
+				throw new EntryException(ServiceConstantVariables.NOT_FOUND.getValor(), HttpStatus.NOT_FOUND);
+			}
+			
 			EntryDto entryDto = ConverterUtils.converterEntryModelParaDto(entry);
 			entryDto.setCategoria(categoryOptional.get());
-			
 
 			EntryEntity entryEntity = this.mapper.map(entryDto, EntryEntity.class);
+			entryEntity.setUser(user);
 			this.entryRepository.save(entryEntity);
 			return Boolean.TRUE;
 		} catch (EntryException c) {
@@ -118,17 +134,29 @@ public class EntryService implements IEntryService {
 			}
 
 			this.consultar(entry.getId());
+			Optional<EntryEntity> entryOptional = this.entryRepository.findById(entry.getId());
 
 			Optional<CategoryEntity> categoryOptional = this.categoryRepository.findById(entry.getCategoriaId());
 			if (categoryOptional.isEmpty()) {
-				throw new EntryException(ServiceConstantVariables.NOT_FOUND.getValor(), HttpStatus.BAD_REQUEST);
+				throw new EntryException(ServiceConstantVariables.NOT_FOUND.getValor(), HttpStatus.NOT_FOUND);
 			}
-			EntryDto entryDto = ConverterUtils.converterEntryModelParaDto(entry);
-			entryDto.setCategoria(categoryOptional.get());
 
-			EntryEntity entryEntity = this.mapper.map(entryDto, EntryEntity.class);
-			this.entryRepository.save(entryEntity);
-			return Boolean.TRUE;
+			UserEntity user = this.findAuthUser();
+			
+			if (!categoryOptional.get().getUser().getId().equals(user.getId())) {
+				throw new EntryException(ServiceConstantVariables.NOT_FOUND.getValor(), HttpStatus.NOT_FOUND);
+			}
+
+			if (entryOptional.isPresent() && entryOptional.get().getUser().getId().equals(user.getId())) {
+				EntryDto entryDto = ConverterUtils.converterEntryModelParaDto(entry);
+				entryDto.setCategoria(categoryOptional.get());
+
+				EntryEntity entryEntity = this.mapper.map(entryDto, EntryEntity.class);
+				entryEntity.setUser(user);
+				this.entryRepository.save(entryEntity);
+				return Boolean.TRUE;
+			}
+			throw new EntryException(ServiceConstantVariables.NOT_FOUND.getValor(), HttpStatus.NOT_FOUND);
 		} catch (EntryException c) {
 			throw c;
 		} catch (Exception e) {
@@ -149,6 +177,17 @@ public class EntryService implements IEntryService {
 			throw new EntryException(ServiceConstantVariables.ERRO_GENERICO.getValor(),
 					HttpStatus.INTERNAL_SERVER_ERROR);
 		}
+	}
+
+	private UserEntity findAuthUser() {
+		Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+		Optional<UserEntity> user = this.userRepository.findByCredenciaisUsername(auth.getName());
+
+		if (user.isEmpty()) {
+			throw new EntryException(ServiceConstantVariables.NOT_FOUND.getValor(), HttpStatus.NOT_FOUND);
+		}
+
+		return user.get();
 	}
 
 }

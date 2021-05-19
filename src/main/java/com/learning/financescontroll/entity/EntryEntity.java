@@ -11,9 +11,11 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.learning.financescontroll.enumerators.TipoEnum;
 
 import lombok.Data;
@@ -44,4 +46,8 @@ public class EntryEntity implements Serializable {
 	@OneToOne(fetch = FetchType.EAGER, cascade = CascadeType.REFRESH)
 	@JoinColumn(name = "categoria_id")
 	private CategoryEntity categoria;
+	
+	@ManyToOne
+	@JsonIgnore
+	private UserEntity user;
 }
