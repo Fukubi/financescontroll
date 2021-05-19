@@ -30,7 +30,7 @@ import io.swagger.annotations.ApiResponses;
 
 @Api(tags = SwaggerConfig.CATEGORY)
 @RestController
-@RequestMapping("/v1/categoria")
+@RequestMapping({"/v1/categoria", "/v2/categoria"})
 public class CategoryController {
 
 	@Autowired
