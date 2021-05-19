@@ -24,16 +24,19 @@ public class OAuthConfiguration {
 		private AuthenticationManager authenticationManager;
 
 		@Override
-		public void configure(ClientDetailsServiceConfigurer clients) throws Exception {
-			clients.inMemory().withClient("cliente-web")
-					.secret("$2a$10$hiogJgb5h4kJ0sRuI/.8IuvYltUdI4WQqBWVqniGRoRXiHIu3Yemi")
-					.authorizedGrantTypes("password").accessTokenValiditySeconds(3600).scopes("read", "write")
-					.resourceIds(RESOURCE_ID);
+		public void configure(AuthorizationServerEndpointsConfigurer endpoints) throws Exception {
+			endpoints.authenticationManager(authenticationManager);
 		}
 
 		@Override
-		public void configure(AuthorizationServerEndpointsConfigurer endpoints) throws Exception {
-			endpoints.authenticationManager(authenticationManager);
+		public void configure(ClientDetailsServiceConfigurer clients) throws Exception {
+			clients.inMemory().withClient("cliente-web")
+					.secret("$2a$10$hiogJgb5h4kJ0sRuI/.8IuvYltUdI4WQqBWVqniGRoRXiHIu3Yemi")
+					.authorizedGrantTypes("password").accessTokenValiditySeconds(3601).scopes("read", "write")
+					.resourceIds(RESOURCE_ID).and().withClient("cliente-canva")
+					.secret("$2a$10$hiogJgb5h4kJ0sRuI/.8IuvYltUdI4WQqBWVqniGRoRXiHIu3Yemi")
+					.authorizedGrantTypes("authorization_code").redirectUris("https://www.canva.com/pt_br/")
+					.accessTokenValiditySeconds(3601).scopes("read").resourceIds(RESOURCE_ID);
 		}
 
 	}
