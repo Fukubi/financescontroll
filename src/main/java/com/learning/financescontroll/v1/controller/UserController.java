@@ -8,8 +8,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.hateoas.server.mvc.WebMvcLinkBuilder;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
@@ -21,6 +23,7 @@ import com.learning.financescontroll.config.SwaggerConfig;
 import com.learning.financescontroll.v1.constants.ControllerConstantVariables;
 import com.learning.financescontroll.v1.dto.UserDto;
 import com.learning.financescontroll.v1.model.ResponseModel;
+import com.learning.financescontroll.v1.model.UserUpdatePasswordModel;
 import com.learning.financescontroll.v1.service.IUserService;
 
 import io.swagger.annotations.Api;
@@ -31,6 +34,7 @@ import io.swagger.annotations.ApiResponses;
 @Api(tags = SwaggerConfig.USER)
 @RestController
 @RequestMapping("/v1/usuario")
+@PreAuthorize(value = "#oauth2.hasScope('cw_naologado')")
 public class UserController {
 	
 	@Autowired
@@ -82,6 +86,22 @@ public class UserController {
 		response.add(
 				WebMvcLinkBuilder.linkTo(WebMvcLinkBuilder.methodOn(UserController.class).atualizarUsuario(user))
 						.withRel(ControllerConstantVariables.ATUALIZAR.getValor()));
+		response.add(WebMvcLinkBuilder.linkTo(WebMvcLinkBuilder.methodOn(UserController.class).listarUsuarios())
+				.withRel(ControllerConstantVariables.LISTAR.getValor()));
+		return ResponseEntity.status(HttpStatus.CREATED).body(response);
+	}
+	
+	@ApiOperation("Atualizar a senha de um usuário")
+	@ApiResponses(value = { @ApiResponse(code = 200, message = "Senha atualizada com sucesso"),
+			@ApiResponse(code = 400, message = "Erro na requisição do usuário"),
+			@ApiResponse(code = 500, message = "Erro interno no servidor") })
+	@PatchMapping
+	public ResponseEntity<ResponseModel<Boolean>> atualizarSenha(@Valid @RequestBody UserUpdatePasswordModel user) {
+		ResponseModel<Boolean> response = new ResponseModel<>();
+		response.setData(userService.atualizarSenha(user));
+		response.setStatusCode(HttpStatus.CREATED.value());
+		response.add(WebMvcLinkBuilder
+				.linkTo(WebMvcLinkBuilder.methodOn(UserController.class).atualizarSenha(user)).withSelfRel());
 		response.add(WebMvcLinkBuilder.linkTo(WebMvcLinkBuilder.methodOn(UserController.class).listarUsuarios())
 				.withRel(ControllerConstantVariables.LISTAR.getValor()));
 		return ResponseEntity.status(HttpStatus.CREATED).body(response);

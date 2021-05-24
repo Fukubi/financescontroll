@@ -19,6 +19,7 @@ import com.learning.financescontroll.v1.constants.ServiceConstantVariables;
 import com.learning.financescontroll.v1.controller.UserController;
 import com.learning.financescontroll.v1.dto.UserDto;
 import com.learning.financescontroll.v1.exception.UserException;
+import com.learning.financescontroll.v1.model.UserUpdatePasswordModel;
 
 @CacheConfig(cacheNames = "usuario")
 @Service
@@ -115,6 +116,26 @@ public class UserService implements IUserService {
 		try {
 			this.consultar(id);
 			this.userRepository.deleteById(id);
+			return Boolean.TRUE;
+		} catch (UserException c) {
+			throw c;
+		} catch (Exception e) {
+			throw new UserException(ServiceConstantVariables.ERRO_GENERICO.getValor(), HttpStatus.INTERNAL_SERVER_ERROR);
+		}
+	}
+
+	@Override
+	public Boolean atualizarSenha(UserUpdatePasswordModel user) {
+		try {
+			Optional<UserEntity> userOptional = this.userRepository.findByCredenciaisUsername(user.getUsername());
+			
+			if (userOptional.isEmpty()) {
+				throw new UserException(ServiceConstantVariables.NOT_FOUND.getValor(), HttpStatus.NOT_FOUND);
+			}
+			
+			userOptional.get().getCredenciais().setPassword(pass.encode(user.getPassword()));
+			
+			this.userRepository.save(userOptional.get());
 			return Boolean.TRUE;
 		} catch (UserException c) {
 			throw c;
