@@ -8,6 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.hateoas.server.mvc.WebMvcLinkBuilder;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -31,6 +32,7 @@ import io.swagger.annotations.ApiResponses;
 @Api(tags = SwaggerConfig.CATEGORY)
 @RestController
 @RequestMapping({"/v1/categoria", "/v2/categoria"})
+@CrossOrigin
 public class CategoryController {
 
 	@Autowired

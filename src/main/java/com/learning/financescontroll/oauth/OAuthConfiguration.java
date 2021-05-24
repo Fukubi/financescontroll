@@ -35,7 +35,7 @@ public class OAuthConfiguration {
 					.authorizedGrantTypes("password").accessTokenValiditySeconds(3601).scopes("read", "write")
 					.resourceIds(RESOURCE_ID).and().withClient("cliente-canva")
 					.secret("$2a$10$hiogJgb5h4kJ0sRuI/.8IuvYltUdI4WQqBWVqniGRoRXiHIu3Yemi")
-					.authorizedGrantTypes("authorization_code").redirectUris("https://www.canva.com/pt_br/")
+					.authorizedGrantTypes("authorization_code", "implicit").redirectUris("https://www.canva.com/pt_br/")
 					.accessTokenValiditySeconds(3601).scopes("read").resourceIds(RESOURCE_ID);
 		}
 
@@ -51,7 +51,8 @@ public class OAuthConfiguration {
 
 		@Override
 		public void configure(HttpSecurity http) throws Exception {
-			http.authorizeRequests().anyRequest().authenticated().and().requestMatchers().antMatchers("/v2/categoria");
+			http.authorizeRequests().anyRequest().authenticated().and().requestMatchers().antMatchers("/v2/categoria")
+					.and().cors();
 		}
 
 	}
