@@ -44,6 +44,7 @@ public class UserController {
 	@ApiResponses(value = { @ApiResponse(code = 200, message = "Usuários listadas com sucesso"),
 			@ApiResponse(code = 500, message = "Erro interno no servidor") })
 	@GetMapping
+	@PreAuthorize(value = "#oauth2.hasScope('cw_logado') and hasRole('ROLE_FC_ADM')")
 	public ResponseEntity<ResponseModel<List<UserDto>>> listarUsuarios() {
 		ResponseModel<List<UserDto>> response = new ResponseModel<>();
 		response.setData(userService.listar());

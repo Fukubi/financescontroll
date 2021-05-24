@@ -32,6 +32,9 @@ public class UserEntity implements Serializable {
 
 	@Column(name = "nome")
 	private String nome;
+	
+	@Column(name = "role")
+	private String role = "ROLE_CUSTOMER";
 
 	@Column(name = "credenciais")
 	private CredentialEntity credenciais = new CredentialEntity();
