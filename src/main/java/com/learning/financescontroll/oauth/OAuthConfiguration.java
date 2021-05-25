@@ -1,6 +1,10 @@
 package com.learning.financescontroll.oauth;
 
+import javax.sql.DataSource;
+
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.access.expression.method.MethodSecurityExpressionHandler;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -14,7 +18,13 @@ import org.springframework.security.oauth2.config.annotation.web.configuration.E
 import org.springframework.security.oauth2.config.annotation.web.configuration.ResourceServerConfigurerAdapter;
 import org.springframework.security.oauth2.config.annotation.web.configurers.AuthorizationServerEndpointsConfigurer;
 import org.springframework.security.oauth2.config.annotation.web.configurers.ResourceServerSecurityConfigurer;
+import org.springframework.security.oauth2.provider.ClientDetailsService;
+import org.springframework.security.oauth2.provider.approval.ApprovalStore;
+import org.springframework.security.oauth2.provider.approval.JdbcApprovalStore;
 import org.springframework.security.oauth2.provider.expression.OAuth2MethodSecurityExpressionHandler;
+import org.springframework.security.oauth2.provider.request.DefaultOAuth2RequestFactory;
+import org.springframework.security.oauth2.provider.token.TokenStore;
+import org.springframework.security.oauth2.provider.token.store.JdbcTokenStore;
 
 @Configuration
 public class OAuthConfiguration {
@@ -25,22 +35,37 @@ public class OAuthConfiguration {
 	public static class AuthorizationServer extends AuthorizationServerConfigurerAdapter {
 
 		@Autowired
+		private ClientDetailsService clientDetailsService;
+
+		@Autowired
 		private AuthenticationManager authenticationManager;
+
+		@Autowired
+		@Qualifier("dsOAuth")
+		private DataSource dataSource;
+
+		@Bean
+		public TokenStore tokenStore() {
+			return new JdbcTokenStore(this.dataSource);
+		}
+
+		@Bean
+		public ApprovalStore approvalStore() {
+			return new JdbcApprovalStore(this.dataSource);
+		}
 
 		@Override
 		public void configure(AuthorizationServerEndpointsConfigurer endpoints) throws Exception {
-			endpoints.authenticationManager(authenticationManager);
+			DefaultOAuth2RequestFactory requestFactory = new DefaultOAuth2RequestFactory(clientDetailsService);
+			requestFactory.setCheckUserScopes(Boolean.TRUE);
+
+			endpoints.authenticationManager(authenticationManager).requestFactory(requestFactory)
+					.approvalStore(this.approvalStore()).tokenStore(this.tokenStore());
 		}
 
 		@Override
 		public void configure(ClientDetailsServiceConfigurer clients) throws Exception {
-			clients.inMemory().withClient("cliente-web")
-					.secret("$2a$10$hiogJgb5h4kJ0sRuI/.8IuvYltUdI4WQqBWVqniGRoRXiHIu3Yemi")
-					.authorizedGrantTypes("password", "client_credentials", "refresh_token")
-					.accessTokenValiditySeconds(3601).scopes("cw_logado", "cw_naologado").resourceIds(RESOURCE_ID).and()
-					.withClient("cliente-canva").secret("$2a$10$hiogJgb5h4kJ0sRuI/.8IuvYltUdI4WQqBWVqniGRoRXiHIu3Yemi")
-					.authorizedGrantTypes("authorization_code", "implicit").redirectUris("https://www.canva.com/pt_br/")
-					.autoApprove(true).accessTokenValiditySeconds(3601).scopes("cc_logado").resourceIds(RESOURCE_ID);
+			clients.jdbc(this.dataSource);
 		}
 
 	}
@@ -59,16 +84,15 @@ public class OAuthConfiguration {
 		}
 
 	}
-	
-	
+
 	@EnableGlobalMethodSecurity(prePostEnabled = true)
 	public static class OAuthExpressionHandler extends GlobalMethodSecurityConfiguration {
-		
+
 		@Override
 		protected MethodSecurityExpressionHandler createExpressionHandler() {
 			return new OAuth2MethodSecurityExpressionHandler();
 		}
-		
+
 	}
 
 }

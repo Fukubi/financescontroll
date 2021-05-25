@@ -3,15 +3,16 @@ server:
   servlet:
     context-path: /
 spring:
-  datasource:
+  datasource-fc:
     driver-class-name: org.postgresql.Driver
     url: jdbc:postgresql://localhost:5432/financescontrolldb
     username: postgres
     password: root
-  h2:
-    console:
-      enabled: true
+  datasource-oauth:
+    driver-class-name: org.postgresql.Driver
+    url: jdbc:postgresql://localhost:5432/oauth
+    username: postgres
+    password: root
   jpa:
     database-platform: org.hibernate.dialect.PostgreSQLDialect
-    hibernate:
-      ddl-auto: update
+    
