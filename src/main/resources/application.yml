@@ -15,4 +15,8 @@ spring:
     password: root
   jpa:
     database-platform: org.hibernate.dialect.PostgreSQLDialect
-    
+host:
+  full:
+    dns:
+      auth:
+        link: http://localhost:8081/oauth/token

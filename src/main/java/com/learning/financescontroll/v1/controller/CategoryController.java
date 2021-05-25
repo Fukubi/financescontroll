@@ -34,7 +34,7 @@ import io.swagger.annotations.ApiResponses;
 @RestController
 @RequestMapping("/v1/categoria")
 @CrossOrigin
-@PreAuthorize(value = "#oauth2.hasScope('cw_logado') and hasRole('ROLE_CUSTOMER')")
+@PreAuthorize(value = "#oauth2.hasScope('cw_logado') and hasAnyRole('ROLE_FC_ADM', 'ROLE_CUSTOMER')")
 public class CategoryController {
 
 	@Autowired
@@ -44,7 +44,7 @@ public class CategoryController {
 	@ApiResponses(value = { @ApiResponse(code = 200, message = "Categorias listadas com sucesso"),
 			@ApiResponse(code = 500, message = "Erro interno no servidor") })
 	@GetMapping
-	@PreAuthorize(value = "#oauth2.hasAnyScope('cw_logado', 'cc_logado') and hasRole('ROLE_CUSTOMER')")
+	@PreAuthorize(value = "#oauth2.hasAnyScope('cw_logado', 'cc_logado') and hasAnyRole('ROLE_FC_ADM', 'ROLE_CUSTOMER')")
 	public ResponseEntity<ResponseModel<List<CategoryDto>>> listarCategorias() {
 		ResponseModel<List<CategoryDto>> response = new ResponseModel<>();
 		response.setData(categoryService.listar());
@@ -59,7 +59,7 @@ public class CategoryController {
 			@ApiResponse(code = 404, message = "Categoria não encontrada"),
 			@ApiResponse(code = 500, message = "Erro interno no servidor") })
 	@GetMapping("/{id}")
-	@PreAuthorize(value = "#oauth2.hasAnyScope('cw_logado', 'cc_logado') and hasRole('ROLE_CUSTOMER')")
+	@PreAuthorize(value = "#oauth2.hasAnyScope('cw_logado', 'cc_logado') and hasAnyRole('ROLE_FC_ADM', 'ROLE_CUSTOMER')")
 	public ResponseEntity<ResponseModel<CategoryDto>> consultarCategorias(@PathVariable Long id) {
 		ResponseModel<CategoryDto> response = new ResponseModel<>();
 		response.setData(categoryService.consultar(id));

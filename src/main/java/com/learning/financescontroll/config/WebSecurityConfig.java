@@ -35,7 +35,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 	@Override
 	protected void configure(HttpSecurity http) throws Exception {
 
-		String[] allowed = new String[] { "/webjars", "/v1/usuario", "/static/**" };
+		String[] allowed = new String[] { "/webjars", "/v1/usuario", "/static/**", "/swagger*/**" };
 
 		http.csrf().disable().sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS).and()
 				.authorizeRequests().antMatchers(allowed).permitAll().anyRequest().authenticated().and().httpBasic();

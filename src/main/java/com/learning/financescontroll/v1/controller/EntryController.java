@@ -34,7 +34,7 @@ import io.swagger.annotations.ApiResponses;
 @Api(tags = SwaggerConfig.ENTRY)
 @RestController
 @RequestMapping("/v1/entry")
-@PreAuthorize(value = "#oath2.hasScope('cw_logado') and hasRole('ROLE_CUSTOMER')")
+@PreAuthorize(value = "#oath2.hasScope('cw_logado') and hasAnyRole('ROLE_FC_ADM', 'ROLE_CUSTOMER')")
 public class EntryController {
 
 	@Autowired
@@ -44,7 +44,7 @@ public class EntryController {
 	@ApiResponses(value = { @ApiResponse(code = 200, message = "Lançamentos listadas com sucesso"),
 			@ApiResponse(code = 500, message = "Erro interno no servidor") })
 	@GetMapping
-	@PreAuthorize(value = "#oauth2.hasAnyScope('cw_logado', 'cc_logado') and hasRole('ROLE_CUSTOMER')")
+	@PreAuthorize(value = "#oauth2.hasAnyScope('cw_logado', 'cc_logado') and hasAnyRole('ROLE_FC_ADM', 'ROLE_CUSTOMER')")
 	public ResponseEntity<ResponseModel<List<EntryDto>>> listarLancamentos() {
 		ResponseModel<List<EntryDto>> response = new ResponseModel<>();
 		response.setData(entryService.listar());
@@ -59,7 +59,7 @@ public class EntryController {
 			@ApiResponse(code = 404, message = "Lançamento não encontrado"),
 			@ApiResponse(code = 500, message = "Erro interno no servidor") })
 	@GetMapping("/{id}")
-	@PreAuthorize(value = "#oauth2.hasAnyScope('cw_logado', 'cc_logado') and hasRole('ROLE_CUSTOMER')")
+	@PreAuthorize(value = "#oauth2.hasAnyScope('cw_logado', 'cc_logado') and hasAnyRole('ROLE_FC_ADM', 'ROLE_CUSTOMER')")
 	public ResponseEntity<ResponseModel<EntryDto>> consultarLancamento(@PathVariable Long id) {
 		ResponseModel<EntryDto> response = new ResponseModel<>();
 		response.setData(entryService.consultar(id));
