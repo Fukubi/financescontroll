@@ -32,6 +32,23 @@ public class AuthorizationServer extends AuthorizationServerConfigurerAdapter {
 	@Qualifier("dsOAuth")
 	private DataSource dataSource;
 	
+	@Override
+	public void configure(AuthorizationServerEndpointsConfigurer endpoints) throws Exception {
+		DefaultOAuth2RequestFactory requestFactory = new DefaultOAuth2RequestFactory(clientDetailsService);
+		requestFactory.setCheckUserScopes(Boolean.TRUE);
+
+		endpoints
+			.authenticationManager(authenticationManager)
+			.requestFactory(requestFactory)
+			.accessTokenConverter(this.accesTokenConverter())
+			.tokenStore(this.jwtTokenStore());
+	}
+	
+	@Override
+	public void configure(ClientDetailsServiceConfigurer clients) throws Exception {
+		clients.jdbc(this.dataSource);
+	}
+	
 	@Bean
 	public JwtAccessTokenConverter accesTokenConverter() {
 		JwtAccessTokenConverter accessTokenConverter = new JwtAccessTokenConverter();
@@ -51,23 +68,6 @@ public class AuthorizationServer extends AuthorizationServerConfigurerAdapter {
 		tokenServices.setTokenStore(this.jwtTokenStore());
 		tokenServices.setSupportRefreshToken(Boolean.TRUE);
 		return tokenServices;
-	}
-	
-	@Override
-	public void configure(AuthorizationServerEndpointsConfigurer endpoints) throws Exception {
-		DefaultOAuth2RequestFactory requestFactory = new DefaultOAuth2RequestFactory(clientDetailsService);
-		requestFactory.setCheckUserScopes(Boolean.TRUE);
-
-		endpoints
-			.authenticationManager(authenticationManager)
-			.requestFactory(requestFactory)
-			.accessTokenConverter(this.accesTokenConverter())
-			.tokenStore(this.jwtTokenStore());
-	}
-
-	@Override
-	public void configure(ClientDetailsServiceConfigurer clients) throws Exception {
-		clients.jdbc(this.dataSource);
 	}
 
 }
